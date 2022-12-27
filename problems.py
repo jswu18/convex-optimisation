@@ -1,6 +1,8 @@
 from __future__ import annotations
+
 import random
 from abc import ABC, abstractmethod
+
 import numpy as np
 from sklearn.datasets import make_moons
 
@@ -43,6 +45,14 @@ class Problem(ABC):
     def generate(*args, **kwargs) -> Problem:
         pass
 
+    @abstractmethod
+    def grad_f_j(self, x: np.ndarray, j: int) -> float:
+        pass
+
+    @abstractmethod
+    def grad_f(self, x: np.ndarray) -> float:
+        return self.a_matrix @ x
+
 
 class SparseProblem(Problem):
     def __init__(
@@ -67,6 +77,12 @@ class SparseProblem(Problem):
         return (1 / (2 * self.n)) * np.linalg.norm(
             self.a_matrix @ x - self.y
         ) ** 2 + lambda_parameter * np.linalg.norm(x, ord=1)
+
+    def grad_f_j(self, x: np.ndarray, j) -> float:
+        return self.a_matrix_j(j) @ (self.a_matrix @ x - self.y)
+
+    def grad_f(self, x: np.ndarray) -> float:
+        pass
 
     @staticmethod
     def generate(
@@ -102,7 +118,7 @@ class SparseProblem(Problem):
         )
 
 
-class SVMProblem(Problem):
+class HalfMoonsProblem(Problem):
     def __init__(self, x: np.ndarray, y: np.ndarray, sigma: float):
         self.x = x
         self.sigma = sigma
@@ -140,18 +156,35 @@ class SVMProblem(Problem):
         return out
 
     def loss(self, x, lambda_parameter: float):
-        pass
+        indicator = (
+            np.float("inf")
+            if np.sum(np.logical_or((x < 0), (x > (1 / (lambda_parameter * self.n)))))
+            else 0
+        )
+        return 0.5 * x.T @ self.a_matrix @ x - np.sum(x) + indicator
+
+    def grad_f_j(self, x: np.ndarray, j) -> float:
+        return self.a_matrix_j(j) @ x
+
+    def grad_f(self, x: np.ndarray) -> float:
+        return self.a_matrix @ x
 
     @staticmethod
     def generate(
         number_of_samples: int, noise: float, sigma: float, random_state: int
-    ) -> SVMProblem:
+    ) -> HalfMoonsProblem:
         x, y = make_moons(
             n_samples=number_of_samples, noise=noise, random_state=random_state
         )
         y = 2 * y - 1
-        return SVMProblem(
+        return HalfMoonsProblem(
             x=x,
             y=y.reshape(-1, 1),
             sigma=sigma,
         )
+
+    def predict(self, alpha, x):
+        gram_matrix = self.calculate_gram(x)
+        return np.sign(
+            gram_matrix.T @ np.multiply(self.y.reshape(-1, 1), alpha.reshape(-1, 1))
+        ).reshape(-1)

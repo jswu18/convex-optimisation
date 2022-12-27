@@ -1,6 +1,8 @@
-from problems import Problem
-import numpy as np
 from abc import ABC, abstractmethod
+
+import numpy as np
+
+from problems import Problem
 
 
 class GradientAlgorithm(ABC):
@@ -13,7 +15,8 @@ class GradientAlgorithm(ABC):
 
 
 class ProximalStochasticGradientAlgorithm(GradientAlgorithm):
-    def __init__(self, problem: Problem):
+    def __init__(self, problem: Problem, is_ergodic_mean: bool):
+        self.is_ergodic_mean = is_ergodic_mean
         super().__init__(problem)
 
     def generate_random_data_index(self):
@@ -28,7 +31,25 @@ class ProximalStochasticGradientAlgorithm(GradientAlgorithm):
             np.linalg.norm(self.problem.a_matrix) ** 2 * np.sqrt(k + 1)
         )
 
-    def run(self, x, lambda_parameter, number_of_steps):
+    def _run_ergodic_mean(self, x, lambda_parameter, number_of_steps):
+        gamma_normaliser = 0
+        x_bar_unnormalised = np.zeros(x.shape)
+        for k in range(number_of_steps):
+            i = self.generate_random_data_index()
+            gamma_k = self.calculate_gamma(k)
+            x = self.problem.proximity_operator(
+                x=x
+                - gamma_k
+                * (self.problem.a_matrix_i(i) @ x - self.problem.y[i])
+                * self.problem.a_matrix_i(i),  # (number of dimensions, )
+                gamma=gamma_k,
+                lambda_parameter=lambda_parameter,
+            )
+            gamma_normaliser += gamma_k
+            x_bar_unnormalised += gamma_k * x
+        return x_bar_unnormalised / gamma_normaliser
+
+    def _run_not_ergodic_mean(self, x, lambda_parameter, number_of_steps):
         for k in range(number_of_steps):
             i = self.generate_random_data_index()
             gamma_k = self.calculate_gamma(k)
@@ -41,6 +62,12 @@ class ProximalStochasticGradientAlgorithm(GradientAlgorithm):
                 lambda_parameter=lambda_parameter,
             )
         return x
+
+    def run(self, x, lambda_parameter, number_of_steps):
+        if self.is_ergodic_mean:
+            return self._run_ergodic_mean(x, lambda_parameter, number_of_steps)
+        else:
+            return self._run_not_ergodic_mean(x, lambda_parameter, number_of_steps)
 
 
 class RandomizedCoordinateProximalGradientAlgorithm(GradientAlgorithm):
@@ -62,12 +89,7 @@ class RandomizedCoordinateProximalGradientAlgorithm(GradientAlgorithm):
             j = self.generate_random_dimension_index()
             gamma_j = self.calculate_gamma(j)
             x[j] = self.problem.proximity_operator(
-                x=x[j]
-                - (gamma_j / self.problem.n)
-                * self.problem.a_matrix_j(j)
-                @ (
-                    self.problem.a_matrix @ x - self.problem.y
-                ),  # (number of dimensions, )
+                x=x[j] - (gamma_j / self.problem.n) * self.problem.grad_f_j(x, j),
                 gamma=gamma_j,
                 lambda_parameter=lambda_parameter,
             )
@@ -79,31 +101,25 @@ class FastIterativeShrinkageThresholdAlgorithm(GradientAlgorithm):
         super().__init__(problem)
 
     @staticmethod
-    def grad_f(a_matrix, x):
-        return a_matrix @ x
-
-    @staticmethod
     def calculate_new_t(t):
         return (1 + np.sqrt(1 + 4 * t**2)) / 2
 
     def calculate_gamma(self, lambda_parameter) -> float:
-        pass
+        return 2 / (np.linalg.norm(self.problem.a_matrix) ** 2)
 
     def run(self, x, lambda_parameter, number_of_steps) -> np.ndarray:
         t = 1
         v = np.random.randn(self.problem.n)
-        u = np.random.randn(self.problem.n)
         gamma = self.calculate_gamma(lambda_parameter)
         for _ in range(number_of_steps):
-            u_new = self.problem.proximity_operator(
-                x=v
-                + gamma * self.problem.a_matrix @ self.grad_f(self.problem.a_matrix, v),
+            x_new = self.problem.proximity_operator(
+                x=v + gamma * self.problem.a_matrix @ self.problem.grad_f(v),
                 gamma=gamma,
                 lambda_parameter=lambda_parameter,
             )
             t_new = self.calculate_new_t(t)
-            v_new = u + ((t - 1) / t_new) * (u_new - u)
-            u = u_new
+            v_new = x + ((t - 1) / t_new) * (x_new - x)
+            x = x_new
             v = v_new
             t = t_new
-        return u
+        return x
