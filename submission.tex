@@ -165,11 +165,6 @@ Thus,
 
 We can see the Fenchel conjugate is:
 
-%\[ f^*(u) = \begin{cases}
-%      0 \tab \text{if } u < 0 \\
-%      u \tab \text{if } u \geq 0 \\
-%   \end{cases}\]
-
 \[ f^*(u) = \max(0, u)}\]
 
 
@@ -285,17 +280,106 @@ Thus we get our inequality:
 
 \[\frac{1}{n}\sum_{i=1}^n x_i \geq \sqrt[n]{x_1 \cdots x_n}\] \square
 \subsection*{2.3}
-\subsection*{2.4}
-\subsection*{2.5}
-  Conditions for the existence of minimizers: $f$ is closed and coercive.
 
-  Conditions for the uniqueness of minimizers: $f$ is strictly convex.
+Given a polytope $C=co(a_1, ..., a_m)$ in $X$, we know that any point $x \in C$ can be expressed:
+
+\[x = \sum_{i=1}^{m} \lambda_i a_i \]
+
+where $\sum_{i=1}^{m} \lambda_i = 1$. Knowing that $f$ is a convex function on $C$, we can write Jensen's inequality for :
+
+\[f\left(\sum_{i=1}^{m} \lambda_i a_i \right) \leq \sum_{i=1}^{m} \lambda_i f(a_i)\]
+
+where $\sum_{i=1}^{m} \lambda_i = 1$.
+
+Because $\sum_{i=1}^{m} \lambda_i f(a_i)$ is a weighted average of $f(a_i)$'s we know that:
+
+\[\sum_{i=1}^{m} \lambda_i f(a_i) \leq \max_{\{a_i\}_{i=1}^m} f(a_i)\]
+
+the weighted average will always be less than or equal to the maximum $f(a_i)$ value. Thus, we know that:
+
+\[f\left(\sum_{i=1}^{m} \lambda_i a_i \right) \leq \max_{\{a_i\}_{i=1}^m} f(a_i)\]
+
+So the maximum of the convex function $f$ on $C$ is attained at one of the vertices $a_1, ..., a_m$.
+\square
+
+\subsection*{2.4}
+
+To prove that the function $f(x, y) = \| x-2y\|^2$ is convex, we will show that the Hessian is a positive semi-definite matrix. The Hessian is defined as:
+
+
+\[
+\nabla^2 f(x, y) = \begin{bmatrix}
+                 \frac{\partial f(x, y)}{\partial^2 x} & \frac{\partial f(x, y)}{\partial y \partial x}\\
+                 \frac{\partial f(x, y)}{\partial x \partial y} & \frac{\partial f(x, y)}{\partial^2 y}
+         \end{bmatrix}
+\]
+
+Calculating each term:
+
+\[\nabla^2 f(x, y) = \begin{bmatrix}
+                 2 & 4\\
+                 4 & 8
+         \end{bmatrix}
+\]
+
+we see that the Hessian is positive semi-definite and so the function is jointly convex.
+
+\subsection*{2.5}
+  The conditions for the existence of minimizers is that $f$ is closed and coercive.
+  The conditions for the uniqueness of minimizers is that $f$ is strictly convex.
+Thus for the existence and uniqueness of minimizers for a convex function $f$, we require that $f$ is closed, coercive, and strictly convex.
+
 \subsection*{2.6}
 
 \newpage
 \section*{Part 3}
 
+Our problem:
 
+\[\min_{\textbf{x} \in \mathbb{R}^d} \frac{1}{2n} \|\textbf{Ax}-\textbf{y}\|^2 + \lambda \|x\|_1\]
+
+where $\textbf{A} \in \mathbb{R}^{n\times d}$, $\textbf{x} \in \mathbb{R}^{d \times 1}$, $\textbf{y} \in \mathbb{R}^{n \times 1}$, $n$ is the number of data points, and $d$ is the number of dimensions.
+
+Equivalently, our problem:
+
+\[\min_{\textbf{x} \in \mathbb{R}^d} \frac{1}{2n} \sum_{i=1}^n \left(\left\langle \textbf{a}^i, \textbf{x} \right\rangle - y_i \right)^2 + \lambda \|x\|_1\]
+
+where $\textbf{a}^i \in \mathbb{R}^{1 \times d}$ is the $i^{th}$ row of \textbf{A}, $i=1, ..., n$.
+
+\subsection*{3.1}
+The Proximal Stochastic Gradient Algorithm:
+
+\[\textbf{x}^{k+1} = prox_{\gamma_k \lambda \|\cdot\|_1} \left(\textbf{x}^k - \gamma_k \left(\left\langle \textbf{a}^{i_k}, \textbf{x}^{k}\right\rangle - y_{i_k}\right)\textbf{a}^{i_k}\right)\]
+
+where:
+
+\[\gamma_k = \frac{n}{\|A\|^2 \sqrt{k+1}}\]
+
+and
+
+\[prox_{\gamma_k \lambda \|\cdot\|_1}(x) = soft_{\gamma_k \lambda}(x) = \begin{cases}
+      0, &  \text{if } |x| \leq \gamma_k \lambda \\
+      x-\gamma_k \lambda, & \text{if } x > \gamma_k \lambda \\
+      x+\gamma_k \lambda, & \text{if } x < - \gamma_k \lambda \\
+   \end{cases}\]
+
+and $i_k$ is sampled uniformly from $\{1, ..., n\}$ at each step $k$.
+
+\subsection*{3.2}
+
+The Randomized Coordinate Proximal Gradient Algorithm:
+
+\[x_j^{k+1} = \begin{cases}
+      soft_{\gamma_j \lambda}(x_j^k - \frac{\gamma_j}{n} \left\langle a_j, \textbf{A} \textbf{x}^k - y\right\rangle), & \text{if } j = j_k \\
+      x_j^k, & \text{otherwise} \\
+   \end{cases}
+\]
+
+where we define $\textbf{a}_j \in \mathbb{R}^{n \times 1}$ as the $j^{th}$ column of $\textbf{A}$, $i=1, ..., d$.
+
+\[\gamma_j = \frac{n}{\|\textbf{a}_j\|^2}\]
+
+and $j_k$ is sampled uniformly from $\{1, ..., d\}$ at each step $k$.
 
 \newpage
 \section*{Part 4}
