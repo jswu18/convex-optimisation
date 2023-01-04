@@ -382,6 +382,46 @@ where we define $\textbf{a}_j \in \mathbb{R}^{n \times 1}$ as the $j^{th}$ colum
 and $j_k$ is sampled uniformly from $\{1, ..., d\}$ at each step $k$.
 
 \newpage
+\subsection*{3.3}
+
+Plotting the objective function values vs the number of iterations for both the algorithms:
+
+\begin{figure}[h]
+\centering
+\begin{minipage}{.5\textwidth}
+  \centering
+\includegraphics[scale=0.4]{outputs/part_3/psga-loss}
+\caption{PSGA}
+\label{fig:}
+\end{minipage}%
+\begin{minipage}{.5\textwidth}
+  \centering
+\includegraphics[scale=0.4]{outputs/part_3/rcpga-loss}
+\caption{RCPGA}
+\label{fig:}
+\end{minipage}
+\end{figure}
+
+The corresponding solution compared to the actual sparse vector for both the algorithms:
+
+\begin{figure}[h]
+\centering
+\begin{minipage}{.5\textwidth}
+  \centering
+\includegraphics[scale=0.4]{outputs/part_3/psga-x}
+\caption{PSGA}
+\label{fig:}
+\end{minipage}%
+\begin{minipage}{.5\textwidth}
+  \centering
+\includegraphics[scale=0.4]{outputs/part_3/rcpga-x}
+\caption{RCPGA}
+\label{fig:}
+\end{minipage}
+\end{figure}
+
+
+\newpage
 \section*{Part 4}
 
 We are given the primal problem:
