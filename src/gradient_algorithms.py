@@ -3,7 +3,7 @@ from typing import List, Tuple
 
 import numpy as np
 
-from src.problems import Problem
+from src.problems import HalfMoonsProblem, Problem
 
 
 class GradientAlgorithm(ABC):
@@ -138,28 +138,63 @@ class RandomizedCoordinateProximalGradientAlgorithm(GradientAlgorithm):
         return x, loss
 
 
-class FastIterativeShrinkageThresholdAlgorithm(GradientAlgorithm):
-    def __init__(self, problem: Problem):
+class RandomizedCoordinateProjectedGradientAlgorithm(
+    RandomizedCoordinateProximalGradientAlgorithm
+):
+    def __init__(self, problem: HalfMoonsProblem):
         super().__init__(problem)
+        self.problem = problem
+
+    def run(
+        self, x, lambda_parameter, number_of_steps
+    ) -> Tuple[np.ndarray, List[float]]:
+        """
+        The RCPGA (projection) algorithm.
+
+        :param x: initial solution (number of dimension, 1)
+        :param lambda_parameter: scalar on g(x) of the minimization problem
+        :param number_of_steps: number of steps to run the algorithm
+        :return: optimised solution from RCPGA and list of loss values at each iteration
+        """
+        loss = [self.problem.loss(x, lambda_parameter)]
+        for k in range(number_of_steps):
+            j = self.generate_random_dimension_index()
+            gamma_parameter_j = self.calculate_gamma_parameter(j)
+            x[j] = self.problem.projection_operator(
+                x=(
+                    x[j]
+                    - (gamma_parameter_j / self.problem.n) * self.problem.grad_f_j(x, j)
+                ),
+                lambda_parameter=lambda_parameter,
+            )
+            loss.append(self.problem.loss(x, lambda_parameter))
+        return x, loss
+
+
+class FastIterativeShrinkageThresholdAlgorithm(GradientAlgorithm):
+    def __init__(self, problem: HalfMoonsProblem):
+        super().__init__(problem)
+        self.problem = problem
 
     @staticmethod
     def calculate_new_t(t):
         return (1 + np.sqrt(1 + 4 * t**2)) / 2
 
-    def calculate_gamma(self) -> float:
-        return 2 / (np.linalg.norm(self.problem.a_matrix) ** 2)
+    def calculate_gamma_parameter(self) -> float:
+        return 2 * self.problem.n / (np.linalg.norm(self.problem.a_matrix) ** 2)
 
     def run(
         self, x, lambda_parameter, number_of_steps
     ) -> Tuple[np.ndarray, List[float]]:
         t = 1
         v = np.random.randn(self.problem.n)
-        gamma = self.calculate_gamma()
+        gamma_parameter = self.calculate_gamma_parameter()
         loss = [self.problem.loss(x, lambda_parameter)]
         for _ in range(number_of_steps):
+            # import pdb; pdb.set_trace()
             x_new = self.problem.proximity_operator(
-                x=v + gamma * self.problem.a_matrix @ self.problem.grad_f(v),
-                gamma=gamma,
+                x=v + gamma_parameter * self.problem.a_matrix @ self.problem.grad_f(v),
+                gamma_parameter=gamma_parameter,
                 lambda_parameter=lambda_parameter,
             )
             t_new = self.calculate_new_t(t)

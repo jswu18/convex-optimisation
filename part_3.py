@@ -1,32 +1,14 @@
 import os
-from typing import List
 
 import matplotlib.pyplot as plt
 import numpy as np
 
 from constants import DEFAULT_SEED, OUTPUTS_FOLDER
+from helpers import plot_loss
 from src.gradient_algorithms import (
     ProximalStochasticGradientAlgorithm,
-    RandomizedCoordinateProximalGradientAlgorithm,
-)
+    RandomizedCoordinateProximalGradientAlgorithm)
 from src.problems import SparseProblem
-
-
-def plot_loss(
-    losses: List[List[float]], labels: List[str], algorithm: str, save_path: str
-):
-    fig = plt.figure()
-    fig.set_figwidth(10)
-    fig.set_figheight(5)
-    for i, loss in enumerate(losses):
-        plt.plot(loss, label=labels[i])
-    if len(labels) > 1:
-        plt.legend()
-    plt.xlabel("Iteration")
-    plt.ylabel("Loss")
-    plt.title(f"Loss ({algorithm})")
-    plt.savefig(save_path, bbox_inches="tight")
-    plt.close()
 
 
 def plot_dimensions(
@@ -86,8 +68,8 @@ def part_3():
         std=0.06,
     )
     x0 = np.random.randn(sparse_problem.d).reshape(-1, 1)
-    lambda_parameter = 10
-    number_of_steps = 1000
+    lambda_parameter = 5e-2
+    number_of_steps = int(1e6)
 
     # Proximal Stochastic Gradient Algorithm
     proximal_stochastic_gradient_algorithm = ProximalStochasticGradientAlgorithm(
@@ -127,6 +109,7 @@ def part_3():
     )
 
     # Randomized Coordinate Proximal Gradient Algorithm
+    number_of_steps = int(1e4)
     randomized_coordinate_proximal_gradient_algorithm = (
         RandomizedCoordinateProximalGradientAlgorithm(sparse_problem)
     )

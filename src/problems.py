@@ -129,7 +129,9 @@ class SparseProblem(Problem):
         super().__init__(a_matrix, y)
 
     @staticmethod
-    def proximity_operator(x, gamma_parameter, lambda_parameter):
+    def proximity_operator(
+        x: np.ndarray, gamma_parameter: float, lambda_parameter: float
+    ) -> np.ndarray:
         """
         The soft thresholding operator, the proximity operator for the absolute value function:
             lambda*||·||
@@ -142,7 +144,7 @@ class SparseProblem(Problem):
         rho = gamma_parameter * lambda_parameter
         return np.sign(x - rho) * np.maximum(0, np.abs(x) - rho)
 
-    def loss(self, x: np.ndarray, lambda_parameter: float):
+    def loss(self, x: np.ndarray, lambda_parameter: float) -> float:
         """
 
         :param x: current solution (number of dimension, 1)
@@ -209,31 +211,68 @@ class SparseProblem(Problem):
 
 class HalfMoonsProblem(Problem):
     def __init__(self, x: np.ndarray, y: np.ndarray, sigma: float):
+        """
+        Classification dataset
+
+        :param x: design_matrix of training points (number of training points, 2)
+        :param y: the response label -1 or 1 (number of training points, 1)
+        :param sigma: noise parameter during data generation process
+        """
         self.x = x
         self.sigma = sigma
-        self.gram_matrix = self.calculate_gram(x)
+        self.gram_matrix = self.calculate_gram(sigma, x)
         super().__init__(
             a_matrix=np.multiply(y @ y.T, self.gram_matrix),
             y=y,
         )
 
     @staticmethod
-    def kernel(x, y, sigma):
-        diff = x - y
-        return np.exp(-diff.T @ diff / (2 * sigma**2))
+    def kernel(x: np.ndarray, y: np.ndarray, sigma: float) -> float:
+        """
+        Square exponential kernel.
 
-    def calculate_gram(self, x):
-        n = self.x.shape[0]
-        m = x.shape[0]
+        :param x: data vector (2, 1)
+        :param y: data vector (2, 1)
+        :param sigma: kernel length scale
+        :return: kernel evaluation k(x, y)
+        """
+        diff = x - y
+        return np.exp(-diff.T @ diff / (2 * sigma**2)).item()
+
+    @staticmethod
+    def calculate_gram(sigma: float, x: np.ndarray, y: np.ndarray = None) -> np.ndarray:
+        """
+        Gram matrix of kernel evaluated at each training point and each test point
+
+        :param x: design_matrix of train points (number of train points, 2)
+        :param y: design_matrix of test points (number of test points, 2)
+        :param sigma: kernel length scale
+        :return: gram matrix (number of training points, number of test points)
+        """
+        if y is None:
+            y = x
+        n = x.shape[0]
+        m = y.shape[0]
         gram_matrix = np.zeros((n, m))
         for i in range(n):
             for j in range(m):
-                gram_matrix[i, j] = self.kernel(self.x[i, :], x[j, :], self.sigma)
+                gram_matrix[i, j] = HalfMoonsProblem.kernel(
+                    x[i : i + 1, :].T, y[j : j + 1, :].T, sigma
+                )
         return gram_matrix
 
     @staticmethod
-    def proximity_operator(x, gamma, lambda_parameter):
-        rho = gamma / lambda_parameter
+    def proximity_operator(
+        x: np.ndarray, gamma_parameter: float, lambda_parameter: float
+    ) -> np.ndarray:
+        """
+
+        :param x: current solution (number of training points, 1)
+        :param gamma_parameter: scalar dictating the step size
+        :param lambda_parameter: scalar on g(x) of the minimization problem
+        :return: soft_threshold(x) vector (number of dimensions, 1)
+        """
+        rho = gamma_parameter / lambda_parameter
         out = np.copy(x)
         mask_1 = x > 1
         out[mask_1] = 0
@@ -244,19 +283,28 @@ class HalfMoonsProblem(Problem):
         out[~(mask_1 | mask_2)] = 1 - x[~(mask_1 | mask_2)]
         return out
 
-    def loss(self, x, lambda_parameter: float):
+    def projection_operator(self, x: np.ndarray, lambda_parameter: float) -> np.ndarray:
+        """
+
+        :param x: current solution (number of training points, 1)
+        :param lambda_parameter: scalar on g(x) of the minimization problem
+        :return: projection(x) vector (number of dimensions, 1)
+        """
+        return np.clip(x, 0, 1 / (lambda_parameter * self.n))
+
+    def loss(self, x: np.ndarray, lambda_parameter: float) -> float:
         indicator = (
             np.float("inf")
-            if np.sum(np.logical_or((x < 0), (x > (1 / (lambda_parameter * self.n)))))
+            if np.sum(x < 0) + np.sum(x > (1 / (lambda_parameter * self.n)))
             else 0
         )
-        return 0.5 * x.T @ self.a_matrix @ x - np.sum(x)  # + indicator
+        return (0.5 * x.T @ self.a_matrix @ x - np.sum(x) + indicator).item()
 
     def grad_f_j(self, x: np.ndarray, j) -> float:
-        return self.a_matrix_j(j) @ x
+        return self.a_matrix_j(j).T @ x
 
     def grad_f(self, x: np.ndarray) -> float:
-        return self.a_matrix @ x
+        return self.a_matrix.T @ x
 
     @staticmethod
     def generate(
@@ -273,7 +321,7 @@ class HalfMoonsProblem(Problem):
         )
 
     def predict(self, alpha, x):
-        gram_matrix = self.calculate_gram(x)
+        gram_matrix = self.calculate_gram(self.sigma, self.x, x)
         return np.sign(
             gram_matrix.T @ np.multiply(self.y.reshape(-1, 1), alpha.reshape(-1, 1))
         ).reshape(-1)

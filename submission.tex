@@ -55,7 +55,7 @@
 
 \begin{document}
 \maketitle
-\section*{Part 1}
+\section*{Part 1: Questions with multiple answers}
 \subsection*{1.1}
 
 The function for (a):
@@ -103,7 +103,7 @@ The solution to the dual problem is (c):
 
 \[\bar{u} = (\textbf{K}+\lambda n \textbf{Id})^{-1} y\]
 
-\section*{Part 2}
+\section*{Part 2: Theory on convex analysis and optimization}
 \subsection*{2.1}
 
 
@@ -331,8 +331,159 @@ Thus for the existence and uniqueness of minimizers for a convex function $f$, w
 
 \subsection*{2.6}
 
+We are considering the optimisation problem:
+
+\[\min_{\|\textbf{A}\textbf{x} - \textbf{b}\|_{\infty} \leq \epsilon} \frac{1}{2}\|\textbf{x}\|^2\]
+
+where $\epsilon > 0$, $\textbf{A} \in \mathbb{R}^{n\times d}$, $\textbf{b} \in \mathbb{R}^{n \times 1}$, and $\textbf{x} \in \mathbb{R}^{d \times 1}$.
+
+\subsubsection*{2.6.1}
+
+To compute the dual problem, we begin by reformulating the problem as:
+
+\[\min_{\textbf{x}}  f(\textbf{x}) + g(\textbf{Ax})\]
+
+where $f(x) = \frac{1}{2}\|\textbf{x}\|^2$ and $g(\textbf{Ax}) =  i_{[0, 1]}\left(\frac{1}{\epsilon}\|\textbf{A}\textbf{x} - \textbf{b}\|_{\infty}\right)$.
+
+Thus we have our primal problem:
+
+\[\min_{\textbf{x}}  \frac{1}{2}\|\textbf{x}\|^2 + i_{[0, 1]}\left(\frac{1}{\epsilon}\|\textbf{A}\textbf{x} - \textbf{b}\|_{\infty}\right)\]
+
+
+We know from the Fenchel-Rockafellar duality theory that the dual problem is formulated as:
+
+\[\min_{\textbf{u}}  g^*(\textbf{u}) + f^*(-\textbf{A}^*\textbf{u})\]
+
+where $\textbf{u} \in \mathbb{R}^{n \times 1}$, $\textbf{A}^* \in \mathbb{R}^{d\times n}$ the transpose of $\textbf{A}$, and $g^*$ and $f^*$ are the Fenchel conjugates of $g$ and $f$ respectively.
+
+The Fenchel conjugates are:
+
+\[g^*(\textbf{Ax}) = i^*_{[0, 1]}\left(\frac{1}{\epsilon}\|\textbf{A}\textbf{x} - \textbf{b}\|_{\infty}\right) = \frac{1}{\epsilon} \| \textbf{A}\textbf{x} - \textbf{b}\|_1\]
+
+\[f^*(\textbf{x}) =  \frac{1}{2}\|\textbf{x}\|^2\]
+
+We can substitute:
+
+\[\min_{\textbf{u}}  \frac{1}{\epsilon} \| \textbf{u} - \textbf{b}\|_1 +  \frac{1}{2}\|-\textbf{A}^*\textbf{u}\|^2\]
+
+Simplifying, we have our dual problem:
+
+\[\min_{\textbf{u}} \frac{1}{2}\textbf{u}^*\textbf{A}\textbf{A}^*\textbf{u} + \frac{1}{\epsilon} \| \textbf{u} - \textbf{b}\|_1\]
+
+\subsubsection*{2.6.2}
+
+To determine if strong duality holds, we use the qualification condition:
+
+\[\textbf{0}_n \in int \big(dom(g) - \textbf{A}dom(f)\big)\]
+
+that $\textbf{0}_n = \textbf{0} \in \mathbb{R}^{n \times 1}$ is in the interior of the intersection of  $dom(g)$, the domain of $g$, with $\textbf{A}dom(f)$, $\textbf{A}$ applied to the domain of $f$.
+
+We know that for $f(x) = \frac{1}{2}\|\textbf{x}\|^2$:
+
+\[\textbf{0}_d \in int \big(dom(f)\big)\]
+
+where $\textbf{0}_d = \textbf{0} \in \mathbb{R}^{d \times 1}$. Thus, knowing that $\textbf{A} \in \mathbb{R}^{n\times d}$ is a linear operator:
+
+\[\textbf{0}_n \in int \big(\textbf{A} dom(f)\big)\]
+
+Moreover, for $g(\textbf{u}) =  i_{[0, 1]}\left(\frac{1}{\epsilon}\|\textbf{u} - \textbf{b}\|_{\infty}\right)$:
+
+\[\textbf{0}_n \in dom(g)\]
+
+if $\|\textbf{b}\|_{\infty} \leq \epsilon$. Therefore:
+
+\[\textbf{0}_n \in int \big(dom(g)\big)\]
+
+if $\|\textbf{b}\|_{\infty} < \epsilon$.
+
+Under the condition that $\|\textbf{b}\|_{\infty} < \epsilon$, strong duality holds. This is because it will be the case that $\textbf{0}_n \in int \big(\textbf{A} dom(f)\big)$ and $\textbf{0}_n \in int \big(dom(g)\big)$ and so the same will hold for their intersection, $\textbf{0}_n \in int \big(dom(g) - \textbf{A}dom(f)\big)$ as required.
+
+\subsubsection*{2.6.3}
+
+The KKT conditions:
+
+\[\textbf{x} \in \partial f^*(-\textbf{A}^*\textbf{u}) \text{ and } \textbf{Ax} \in \partial g^*(\textbf{u})\]
+
+where $\partial f^*$ and $\partial g^*$ are the subgradients of $f^*$ and $g^*$ respectively.
+
+We know that:
+
+\[\partial f^*(-\textbf{A}^*\textbf{u}) = \partial \frac{1}{2}\|-\textbf{A}^*\textbf{u}\|^2 = -\textbf{A}^*\textbf{u}\]
+
+Moreover:
+
+\[\partial g^*(\textbf{u}) = \partial\frac{1}{\epsilon} \| \textbf{u} - \textbf{b}\|_1 \]
+
+and so
+
+\[\left(\partial\| \textbf{u} - \textbf{b}\|_1\right)_i = \begin{cases}
+      \frac{1}{\epsilon}, &  \text{if } | u_i - b_i| > 0 \\
+      -\frac{1}{\epsilon}, &  \text{if } | u_i - b_i| < 0 \\
+      [-\frac{1}{\epsilon}, \frac{1}{\epsilon}], &  \text{if } | u_i - b| = 0 \\
+   \end{cases} \\
+\]
+
+where $\left(\partial\| \textbf{u} - \textbf{b}\|_1\right)_i$ is the $i^{th}$ element of $\partial\| \textbf{u} - \textbf{b}\|_1 \in \mathbb{R}^{n \times 1}$
+
+Thus, our KKT conditions state that:
+
+\[\textbf{x} = -\textbf{A}^*\textbf{u}\]
+
+and
+
+\[(\textbf{Ax})_i \in \begin{cases}
+      \frac{1}{\epsilon}, &  \text{if } | u_i - b_i| > 0 \\
+      -\frac{1}{\epsilon}, &  \text{if } | u_i - b_i| < 0 \\
+      [-\frac{1}{\epsilon}, \frac{1}{\epsilon}], &  \text{if } | u_i - b| = 0 \\
+   \end{cases} \\\]
+
+where $(\textbf{Ax})_i$ is the $i^{th}$ element of $\textbf{Ax}\in \mathbb{R}^{n \times 1}$
+
+\subsubsection*{2.6.4}
+
+To derive a rate of convergence on the primal iterates from the applications of FISTA (Fast Iterative Shrinkage Threshold Algorithm) on the  dual problem when strong duality holds, the distance to the primal solution is bounded by the dual objective values:
+
+\[\frac{2}{\mu} \|\textbf{x}_k - \bar{\textbf{x}}\|^2 \leq \Psi(\textbf{u}_k) - \Psi(\bar{\textbf{u}})\]
+
+where $\bar{\textbf{x}} \in \mathbb{R}^{d \times 1}$ and $\bar{\textbf{u}} \in \mathbb{R}^{n \times 1}$ are minimizers for the primal and dual solution respectively, $\textbf{x}_k \in \mathbb{R}^{d \times 1}$ and $\textbf{u}_k \in \mathbb{R}^{n \times 1}$ are respectively the primal and dual solutions for the $k^{th}$ step of FISTA, and $\mu$ is the coefficient of strong convexity for $f$. For our problem, $\mu = 1$.
+Moreover, $\Psi(\textbf{u})=\frac{1}{2}\textbf{u}^*\textbf{A}\textbf{A}^*\textbf{u} + \frac{1}{\epsilon} \| \textbf{u} - \textbf{b}\|_1$, our dual objective.
+
+We also know for FISTA that (proof in lecture):
+
+\[\Psi(\textbf{u}_k) - \Psi(\bar{\textbf{u}}) \leq \frac{\|\textbf{u}_0 - \bar{\textbf{u}}\|^2}{2 \gamma \left(t_{k-1}}\right)^2\]
+
+where $\textbf{u}_0 \in \mathbb{R}^{n \times 1}$ is the initial starting point for FISTA, and $0 < \gamma \leq \frac{1}{L}$  and $t_{k-1}$ are both scalars dictating step sizes in FISTA ($t_{k-1}$ is for step $k-1}$). $L$ is the Lipschitz smoothness of $f$. For our problem, $L=1$.
+
+Thus:
+
+\[ \|\textbf{x}_k - \bar{\textbf{x}}\|^2 \leq \frac{\|\textbf{u}_0 - \bar{\textbf{u}}\|^2}{4 \gamma \left(t_{k-1}}\right)^2\]
+
+Simplifying:
+
+\[ \|\textbf{x}_k - \bar{\textbf{x}}\| \leq \frac{\|\textbf{u}_0 - \bar{\textbf{u}}\|}{2  \sqrt{\gamma}t_{k-1}}\]
+
+
+
+Two choices for $t_k$ in FISTA are:
+
+\begin{itemize}
+\setlength{\itemindent}{2em}
+\item $t_k = \frac{1+\sqrt{1+ 4 (t_{k-1})^2}}{2}$ where $\frac{1}{t_{k-1}} \leq \frac{2}{k+1}$
+\item $t_k = \frac{k+a}{a}$ with $a \geq 2$ where $\frac{1}{t_{k-1}} \leq \frac{a}{k+1}$
+\end{itemize}
+
+where $t_0  =1 $
+
+In both cases the rate of convergence of the primal iterates when applying FISTA on the dual problem:
+
+
+
+\[ \|\textbf{x}_k - \bar{\textbf{x}}\| \leq \frac{a\|\textbf{u}_0 - \bar{\textbf{u}}\|}{\sqrt{\gamma}(k+1)}\]
+
+where $a = 2$ if $t_k = \frac{1+\sqrt{1+ 4 (t_{k-1})^2}}{2}$. In other words, the rate is $\mathcal{O}(\frac{1}{k})$.
+
 \newpage
-\section*{Part 3}
+\section*{Part 3: Solving the Lasso problem}
 
 Our problem:
 
@@ -422,7 +573,7 @@ The corresponding solution compared to the actual sparse vector for both the alg
 
 
 \newpage
-\section*{Part 4}
+\section*{Part 4: Support Vector Machines}
 
 We are given the primal problem:
 
@@ -452,7 +603,51 @@ We can express in the form:
 
 \subsection*{4.1}
 
+\subsection*{4.2}
+
+\newpage
+\subsection*{4.3}
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.25]{outputs/part_4/initial-contour}
+\caption{$\alpha^{(0)}$ Contour Plot}
+\label{fig:}
+\end{figure}
 
 
+\begin{figure}[h]
+\centering
+\begin{minipage}{.5\textwidth}
+  \centering
+\includegraphics[scale=0.25]{outputs/part_4/rcpga-contour}
+\caption{RCPGA Contour Plot}
+\label{fig:}
+\end{minipage}%
+\begin{minipage}{.5\textwidth}
+  \centering
+\includegraphics[scale=0.25]{outputs/part_4/fista-contour}
+\caption{FISTA Contour Plot}
+\label{fig:}
+\end{minipage}
+\end{figure}
+
+\subsection*{4.4}
+
+\begin{figure}[h]
+\centering
+\begin{minipage}{.5\textwidth}
+  \centering
+\includegraphics[scale=0.4]{outputs/part_4/rcpga-loss}
+\caption{RCPGA Loss}
+\label{fig:}
+\end{minipage}%
+\begin{minipage}{.5\textwidth}
+  \centering
+\includegraphics[scale=0.4]{outputs/part_4/fista-loss}
+\caption{FISTA Loss}
+\label{fig:}
+\end{minipage}
+\end{figure}
 
 \end{document}
