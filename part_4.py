@@ -8,11 +8,14 @@ from constants import DEFAULT_SEED, OUTPUTS_FOLDER
 from helpers import plot_loss
 from src.gradient_algorithms import (
     FastIterativeShrinkageThresholdAlgorithm,
-    RandomizedCoordinateProjectedGradientAlgorithm)
+    RandomizedCoordinateProjectedGradientAlgorithm,
+)
 from src.problems import HalfMoonsProblem
 
 
-def plot_contour(half_moons_problem, x, algorithm, save_path):
+def plot_contour(
+    half_moons_problem: HalfMoonsProblem, x: np.ndarray, algorithm: str, save_path: str
+) -> None:
     x_min = np.min(half_moons_problem.x[:, 0]) - 1
     x_max = np.max(half_moons_problem.x[:, 0]) + 1
     y_min = np.min(half_moons_problem.x[:, 1]) - 1

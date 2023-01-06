@@ -3,7 +3,7 @@ from typing import List, Tuple
 
 import numpy as np
 
-from src.problems import HalfMoonsProblem, Problem
+from src.problems import HalfMoonsProblem, Problem, SparseProblem
 
 
 class GradientAlgorithm(ABC):
@@ -18,7 +18,7 @@ class GradientAlgorithm(ABC):
 
 
 class ProximalStochasticGradientAlgorithm(GradientAlgorithm):
-    def __init__(self, problem: Problem, is_ergodic_mean: bool):
+    def __init__(self, problem: SparseProblem, is_ergodic_mean: bool):
         """
         The Proximal Stochastic Gradient Algorithm.
 
@@ -139,6 +139,9 @@ class RandomizedCoordinateProximalGradientAlgorithm(GradientAlgorithm):
 class RandomizedCoordinateProjectedGradientAlgorithm(
     RandomizedCoordinateProximalGradientAlgorithm
 ):
+    def __init__(self, problem: HalfMoonsProblem):
+        super().__init__(problem)
+
     def calculate_gamma_parameter(self, j: int) -> float:
         """
         gamma = 1/(||a_j||^2)

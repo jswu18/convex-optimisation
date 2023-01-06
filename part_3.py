@@ -7,7 +7,8 @@ from constants import DEFAULT_SEED, FEATURE_THRESHOLD, OUTPUTS_FOLDER
 from helpers import plot_loss
 from src.gradient_algorithms import (
     ProximalStochasticGradientAlgorithm,
-    RandomizedCoordinateProximalGradientAlgorithm)
+    RandomizedCoordinateProximalGradientAlgorithm,
+)
 from src.problems import SparseProblem
 
 
