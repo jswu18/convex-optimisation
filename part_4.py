@@ -16,10 +16,10 @@ from src.problems import HalfMoonsProblem
 def plot_contour(
     half_moons_problem: HalfMoonsProblem, x: np.ndarray, algorithm: str, save_path: str
 ) -> None:
-    x_min = np.min(half_moons_problem.x[:, 0]) - 1
-    x_max = np.max(half_moons_problem.x[:, 0]) + 1
-    y_min = np.min(half_moons_problem.x[:, 1]) - 1
-    y_max = np.max(half_moons_problem.x[:, 1]) + 1
+    x_min = np.min(half_moons_problem.x[:, 0]) - 0.1
+    x_max = np.max(half_moons_problem.x[:, 0]) + 0.1
+    y_min = np.min(half_moons_problem.x[:, 1]) - 0.1
+    y_max = np.max(half_moons_problem.x[:, 1]) + 0.1
     x_ticks = np.linspace(
         x_min,
         x_max,
@@ -36,18 +36,28 @@ def plot_contour(
 
     y_grid = half_moons_problem.predict(x.T, x_grid).reshape(-1)
     y = half_moons_problem.y.reshape(-1)
-    fig = plt.figure()
-    fig.set_figwidth(2 * (x_max - x_min))
-    fig.set_figwidth(2 * (y_max - y_min))
-    plt.contourf(x1_grid, x2_grid, y_grid.reshape(x1_grid.shape))
+    fig, ax = plt.subplots(constrained_layout=True)
+    fig.set_figwidth(3 * (x_max - x_min))
+    fig.set_figheight(3 * (y_max - y_min))
+    cmap = plt.get_cmap("binary_r", 2)
+    contour = ax.contourf(x1_grid, x2_grid, y_grid.reshape(x1_grid.shape), cmap=cmap)
     for label in set(y):
+        edge = "gray"
+        if label == -1:
+            colour = "black"
+        else:
+            colour = "white"
         idx = y == label
         plt.scatter(
             half_moons_problem.x[idx, 0],
             half_moons_problem.x[idx, 1],
             label=label,
+            c=colour,
+            edgecolors=edge,
+            s=120,
         )
     plt.legend()
+    fig.colorbar(contour, ticks=[-1, 1])
     plt.title(f"Contour Plot ({algorithm})")
     plt.savefig(save_path, bbox_inches="tight")
     plt.close()

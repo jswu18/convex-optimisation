@@ -332,7 +332,6 @@ Thus for the existence and uniqueness of minimizers for a convex function $f$, w
 \subsection*{2.6}
 
 We are considering the optimisation problem:
-
 \[\min_{\|\textbf{A}\textbf{x} - \textbf{b}\|_{\infty} \leq \epsilon} \frac{1}{2}\|\textbf{x}\|^2\]
 
 where $\epsilon > 0$, $\textbf{A} \in \mathbb{R}^{n\times d}$, $\textbf{b} \in \mathbb{R}^{n \times 1}$, and $\textbf{x} \in \mathbb{R}^{d \times 1}$.
@@ -340,7 +339,6 @@ where $\epsilon > 0$, $\textbf{A} \in \mathbb{R}^{n\times d}$, $\textbf{b} \in \
 \subsubsection*{2.6.1}
 
 To compute the dual problem, we begin by reformulating the problem as:
-
 \[\min_{\textbf{x}}  f(\textbf{x}) + g(\textbf{Ax})\]
 
 where $f(x) = \frac{1}{2}\|\textbf{x}\|^2$ and $g(\textbf{Ax}) =  i_{[0, 1]}\left(\frac{1}{\epsilon}\|\textbf{A}\textbf{x} - \textbf{b}\|_{\infty}\right)$.
@@ -351,23 +349,19 @@ Thus we have our primal problem:
 
 
 We know from the Fenchel-Rockafellar duality theory that the dual problem is formulated as:
-
 \[\min_{\textbf{u}}  g^*(\textbf{u}) + f^*(-\textbf{A}^*\textbf{u})\]
 
 where $\textbf{u} \in \mathbb{R}^{n \times 1}$, $\textbf{A}^* \in \mathbb{R}^{d\times n}$ the transpose of $\textbf{A}$, and $g^*$ and $f^*$ are the Fenchel conjugates of $g$ and $f$ respectively.
 
 The Fenchel conjugates are:
-
 \[g^*(\textbf{Ax}) = i^*_{[0, 1]}\left(\frac{1}{\epsilon}\|\textbf{A}\textbf{x} - \textbf{b}\|_{\infty}\right) = \frac{1}{\epsilon} \| \textbf{A}\textbf{x} - \textbf{b}\|_1\]
 
 \[f^*(\textbf{x}) =  \frac{1}{2}\|\textbf{x}\|^2\]
 
 We can substitute:
-
 \[\min_{\textbf{u}}  \frac{1}{\epsilon} \| \textbf{u} - \textbf{b}\|_1 +  \frac{1}{2}\|-\textbf{A}^*\textbf{u}\|^2\]
 
 Simplifying, we have our dual problem:
-
 \[\min_{\textbf{u}} \frac{1}{2}\textbf{u}^*\textbf{A}\textbf{A}^*\textbf{u} + \frac{1}{\epsilon} \| \textbf{u} - \textbf{b}\|_1\]
 
 \subsubsection*{2.6.2}
@@ -379,19 +373,15 @@ To determine if strong duality holds, we use the qualification condition:
 that $\textbf{0}_n = \textbf{0} \in \mathbb{R}^{n \times 1}$ is in the interior of the intersection of  $dom(g)$, the domain of $g$, with $\textbf{A}dom(f)$, $\textbf{A}$ applied to the domain of $f$.
 
 We know that for $f(x) = \frac{1}{2}\|\textbf{x}\|^2$:
-
 \[\textbf{0}_d \in int \big(dom(f)\big)\]
 
 where $\textbf{0}_d = \textbf{0} \in \mathbb{R}^{d \times 1}$. Thus, knowing that $\textbf{A} \in \mathbb{R}^{n\times d}$ is a linear operator:
-
 \[\textbf{0}_n \in int \big(\textbf{A} dom(f)\big)\]
 
 Moreover, for $g(\textbf{u}) =  i_{[0, 1]}\left(\frac{1}{\epsilon}\|\textbf{u} - \textbf{b}\|_{\infty}\right)$:
-
 \[\textbf{0}_n \in dom(g)\]
 
 if $\|\textbf{b}\|_{\infty} \leq \epsilon$. Therefore:
-
 \[\textbf{0}_n \in int \big(dom(g)\big)\]
 
 if $\|\textbf{b}\|_{\infty} < \epsilon$.
@@ -401,21 +391,17 @@ Under the condition that $\|\textbf{b}\|_{\infty} < \epsilon$, strong duality ho
 \subsubsection*{2.6.3}
 
 The KKT conditions:
-
 \[\textbf{x} \in \partial f^*(-\textbf{A}^*\textbf{u}) \text{ and } \textbf{Ax} \in \partial g^*(\textbf{u})\]
 
 where $\partial f^*$ and $\partial g^*$ are the subgradients of $f^*$ and $g^*$ respectively.
 
 We know that:
-
 \[\partial f^*(-\textbf{A}^*\textbf{u}) = \partial \frac{1}{2}\|-\textbf{A}^*\textbf{u}\|^2 = -\textbf{A}^*\textbf{u}\]
 
 Moreover:
-
 \[\partial g^*(\textbf{u}) = \partial\frac{1}{\epsilon} \| \textbf{u} - \textbf{b}\|_1 \]
 
 and so
-
 \[\left(\partial\| \textbf{u} - \textbf{b}\|_1\right)_i = \begin{cases}
       \frac{1}{\epsilon}, &  \text{if } | u_i - b_i| > 0 \\
       -\frac{1}{\epsilon}, &  \text{if } | u_i - b_i| < 0 \\
@@ -426,11 +412,9 @@ and so
 where $\left(\partial\| \textbf{u} - \textbf{b}\|_1\right)_i$ is the $i^{th}$ element of $\partial\| \textbf{u} - \textbf{b}\|_1 \in \mathbb{R}^{n \times 1}$
 
 Thus, our KKT conditions state that:
-
 \[\textbf{x} = -\textbf{A}^*\textbf{u}\]
 
 and
-
 \[(\textbf{Ax})_i \in \begin{cases}
       \frac{1}{\epsilon}, &  \text{if } | u_i - b_i| > 0 \\
       -\frac{1}{\epsilon}, &  \text{if } | u_i - b_i| < 0 \\
@@ -442,30 +426,24 @@ where $(\textbf{Ax})_i$ is the $i^{th}$ element of $\textbf{Ax}\in \mathbb{R}^{n
 \subsubsection*{2.6.4}
 
 To derive a rate of convergence on the primal iterates from the applications of FISTA (Fast Iterative Shrinkage Threshold Algorithm) on the  dual problem when strong duality holds, the distance to the primal solution is bounded by the dual objective values:
-
 \[\frac{2}{\mu} \|\textbf{x}_k - \bar{\textbf{x}}\|^2 \leq \Psi(\textbf{u}_k) - \Psi(\bar{\textbf{u}})\]
 
 where $\bar{\textbf{x}} \in \mathbb{R}^{d \times 1}$ and $\bar{\textbf{u}} \in \mathbb{R}^{n \times 1}$ are minimizers for the primal and dual solution respectively, $\textbf{x}_k \in \mathbb{R}^{d \times 1}$ and $\textbf{u}_k \in \mathbb{R}^{n \times 1}$ are respectively the primal and dual solutions for the $k^{th}$ step of FISTA, and $\mu$ is the coefficient of strong convexity for $f$. For our problem, $\mu = 1$.
 Moreover, $\Psi(\textbf{u})=\frac{1}{2}\textbf{u}^*\textbf{A}\textbf{A}^*\textbf{u} + \frac{1}{\epsilon} \| \textbf{u} - \textbf{b}\|_1$, our dual objective.
 
 We also know for FISTA that (proof in lecture):
-
 \[\Psi(\textbf{u}_k) - \Psi(\bar{\textbf{u}}) \leq \frac{\|\textbf{u}_0 - \bar{\textbf{u}}\|^2}{2 \gamma \left(t_{k-1}}\right)^2\]
 
 where $\textbf{u}_0 \in \mathbb{R}^{n \times 1}$ is the initial starting point for FISTA, and $0 < \gamma \leq \frac{1}{L}$  and $t_{k-1}$ are both scalars dictating step sizes in FISTA ($t_{k-1}$ is for step $k-1}$). $L$ is the Lipschitz smoothness of $f$. For our problem, $L=1$.
 
 Thus:
-
 \[ \|\textbf{x}_k - \bar{\textbf{x}}\|^2 \leq \frac{\|\textbf{u}_0 - \bar{\textbf{u}}\|^2}{4 \gamma \left(t_{k-1}}\right)^2\]
 
 Simplifying:
-
 \[ \|\textbf{x}_k - \bar{\textbf{x}}\| \leq \frac{\|\textbf{u}_0 - \bar{\textbf{u}}\|}{2  \sqrt{\gamma}t_{k-1}}\]
 
 
-
 Two choices for $t_k$ in FISTA are:
-
 \begin{itemize}
 \setlength{\itemindent}{2em}
 \item $t_k = \frac{1+\sqrt{1+ 4 (t_{k-1})^2}}{2}$ where $\frac{1}{t_{k-1}} \leq \frac{2}{k+1}$
@@ -475,9 +453,6 @@ Two choices for $t_k$ in FISTA are:
 where $t_0  =1 $
 
 In both cases the rate of convergence of the primal iterates when applying FISTA on the dual problem:
-
-
-
 \[ \|\textbf{x}_k - \bar{\textbf{x}}\| \leq \frac{a\|\textbf{u}_0 - \bar{\textbf{u}}\|}{\sqrt{\gamma}(k+1)}\]
 
 where $a = 2$ if $t_k = \frac{1+\sqrt{1+ 4 (t_{k-1})^2}}{2}$. In other words, the rate is $\mathcal{O}(\frac{1}{k})$.
@@ -486,13 +461,11 @@ where $a = 2$ if $t_k = \frac{1+\sqrt{1+ 4 (t_{k-1})^2}}{2}$. In other words, th
 \section*{Part 3: Solving the Lasso problem}
 
 Our problem:
-
 \[\min_{\textbf{x} \in \mathbb{R}^d} \frac{1}{2n} \|\textbf{Ax}-\textbf{y}\|^2 + \lambda \|x\|_1\]
 
 where $\textbf{A} \in \mathbb{R}^{n\times d}$, $\textbf{x} \in \mathbb{R}^{d \times 1}$, $\textbf{y} \in \mathbb{R}^{n \times 1}$, $n$ is the number of data points, and $d$ is the number of dimensions.
 
 Equivalently, our problem:
-
 \[\min_{\textbf{x} \in \mathbb{R}^d} \frac{1}{2n} \sum_{i=1}^n \left(\left\langle \textbf{a}^i, \textbf{x} \right\rangle - y_i \right)^2 + \lambda \|x\|_1\]
 
 where $\textbf{a}^i \in \mathbb{R}^{1 \times d}$ is the $i^{th}$ row of \textbf{A}, $i=1, ..., n$.
@@ -581,6 +554,7 @@ The corresponding solution compared to the actual sparse vector for both the alg
 \end{minipage}
 \end{figure}
 
+We can see that both algorithms are able to recover a sparse solution, however RCPGA was able to converge in much fewer iterations compared to PSGA.
 
 \newpage
 \section*{Part 4: Support Vector Machines}
@@ -700,6 +674,6 @@ Similarly for each algorithm, we can plot the decision boundaries from the learn
 \end{figure}
 
 \subsection*{4.4}
-Comparing the two algorithms, we can see that both are able to converge to $\alpha$ vectors producing decision boundaries that successfully separate the two training points for the two classes. However, the FISTA decision boundary is quite close to the points for both classes (i.e. the decision boundary is not as curves as for RCPGA). Thus, the quality of the solution is not as nice as the RCPGA where there is ample buffer surrounding the decision boundary for both classes. This would seem that RCPGA can produce more reasonable results, however considering the loss function plots for both algorithms, we can see that this comes at a tradeoff of computational resources/speed. FISTA is able to converge in around 50 iterations whereas RCPGA required on the order of $3\times 10^{5}$ iterations. Although each FISTA step involves two steps (to calculate $\alpha_{k+1}$ and $\nu_{k+1}$), this is still a much faster algorithm than RCGPA. Thus, depending on the practical use case, if there is a requirement on the algorithm's speed, then FISTA may be more appropriate. On the other hand, if we have more resources available, then RCGPA may be more appropriate as it seems to produce more reasonable/accurate results.
+Comparing the two algorithms, we can see that both are able to converge to $\alpha$ vectors producing decision boundaries that are relatively successful at separating the majority of the training points for the two classes. However, the FISTA decision boundary misses a couple points for both classes with a decision boundary that is rather close to boundary points of each class. Thus, the quality of the solution is not as nice as the RCPGA where there is ample buffer surrounding the decision boundary for both classes. This would seem that RCPGA can produce better results, however considering the loss function plots for both algorithms, we can see that this comes at a tradeoff of computational resources/speed. FISTA is able to converge in around 50 iterations whereas RCPGA required on the order of $3\times 10^{5}$ iterations. Although each FISTA step involves two steps (to calculate $\alpha_{k+1}$ and $\nu_{k+1}$), this is still a much faster algorithm than RCGPA. Thus, depending on the practical use case, if there is a requirement for algorithm speed, then FISTA may be more appropriate. On the other hand, if we have more resources available, then RCGPA may be more appropriate as it seems to produce more reasonable/accurate results.
 
 \end{document}
