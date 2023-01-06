@@ -23,12 +23,12 @@ def plot_contour(
     x_ticks = np.linspace(
         x_min,
         x_max,
-        100,
+        500,
     )
     y_ticks = np.linspace(
         y_min,
         y_max,
-        100,
+        500,
     )
 
     x1_grid, x2_grid = np.meshgrid(x_ticks, y_ticks)
