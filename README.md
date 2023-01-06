@@ -1,6 +1,10 @@
-# comp0083-convex-assignment
+# Convex Optimisation
 
 Convex Optimisation Assignment for Advanced Topics in Machine Learning (COMP0083) at UCL 2022
+
+- Proximal Stochastic Gradient Algorithm (PSGA)
+- Randomised Coordinate Proximal Gradient Algorithm (RCPGA)
+- Fast Iterative Shrinkage Threshold Algorithm (FISTA)
 
 To set up your python environment:
 

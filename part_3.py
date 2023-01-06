@@ -56,8 +56,6 @@ def plot_dimensions(
 
 def part_3():
     np.random.seed(DEFAULT_SEED)
-
-    # Part 3
     part_3_output_folder = os.path.join(OUTPUTS_FOLDER, "part_3")
     if not os.path.exists(part_3_output_folder):
         os.makedirs(part_3_output_folder)

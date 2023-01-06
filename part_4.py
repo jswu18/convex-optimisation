@@ -55,8 +55,6 @@ def plot_contour(
 
 def part_4():
     np.random.seed(DEFAULT_SEED)
-
-    # Part 4
     part_4_output_folder = os.path.join(OUTPUTS_FOLDER, "part_4")
     if not os.path.exists(part_4_output_folder):
         os.makedirs(part_4_output_folder)
@@ -64,8 +62,7 @@ def part_4():
     number_of_samples = 200
     x0 = np.random.randn(number_of_samples).reshape(-1, 1)
     sigma = 0.4
-    lambda_parameter = 10
-    number_of_steps = int(2e5)
+    lambda_parameter = 5e-3
     half_moons_problem = HalfMoonsProblem.generate(
         number_of_samples=number_of_samples,
         noise=0.05,
@@ -80,6 +77,7 @@ def part_4():
     )
 
     # Randomized Coordinate Projected Gradient Algorithm
+    number_of_steps = int(3e5)
     rcpga = RandomizedCoordinateProjectedGradientAlgorithm(half_moons_problem)
     x_rcpga, loss_rcpga = rcpga.run(x0.copy(), lambda_parameter, number_of_steps)
     plot_contour(

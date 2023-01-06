@@ -586,78 +586,120 @@ The corresponding solution compared to the actual sparse vector for both the alg
 \section*{Part 4: Support Vector Machines}
 
 We are given the primal problem:
+\[\min_{\textbf{w} \in \mathcal{H}} \frac{1}{\lambda n} \sum_{i=1}^{n} (1-y_i \langle \textbf{w}, \Lambda(\textbf{x}_i)\rangle)_{+} + \frac{1}{2}\| \textbf{w}\|^2\]
 
-\[\min_{w \in \mathcal{H}} \frac{\lambda}{n} \sum_{i=1}^{n} (1-y_i \langle w, \Lambda(x_i)\rangle)_{+} + \frac{\lambda}{2}\| w\|^2\]
+where $\mathcal{H}$ is a Hilbert space.
 
-We can express in the form:
-
-\[\min_{w \in \mathcal{H}} g(w) + f(w)\]
+The primal problem can be expressed the form:
+\[\min_{w \in \mathcal{H}} f(\textbf{w}) + g(\textbf{A}\textbf{w})\]
 
 where:
+\[f(\textbf{w}) = \frac{1}{2}\| \textbf{w}\|^2\]
 
-\[g(w) = \frac{\lambda}{n} \sum_{i=1}^{n} (1-y_i \langle w, \Lambda(x_i)\rangle)_{+}\]
+and
+\[g(\textbf{A}\textbf{w}) = \frac{1}{\lambda n} \sum_{i=1}^{n} (1-y_i \langle \textbf{w}, \Lambda(\textbf{x}_i)\rangle)_{+}\]
+
+where $\textbf{A}_i = \Lambda(\textbf{x}_i) \in \mathcal{H}$ our Hilbert space.
+
+This corresponds to the dual problem of the form:
+\[\min_{\textbf{u} \in \mathbb{R}^{n}} f^*(-\textbf{A}^*\textbf{u}) + g^*(\textbf{u})\]
+
+where:
+\[f^*(-\textbf{A}^*\textbf{u}) = \frac{1}{2}\| -\textbf{A}^*\textbf{u}\|^2 = \frac{1}{2} \textbf{u}^*\textbf{A} \textbf{A}^*\textbf{u}\]
+
+and using the kernel defined by $\mathcal{H}$, we can substitute $\textbf{A} \textbf{A}^*$ with the gram matrix $\textbf{K}$:
+\[f^*(-\textbf{A}^*\textbf{u}) = \frac{1}{2} \textbf{u}^*\textbf{K}\textbf{u}\]
+
+Moreover,
+\[g^*(\textbf{u}) = - \langle \textbf{y}, \textbf{u}\rangle + \sum_{i=1}^{n} i_{\left[0, \frac{1}{\lambda n}\right]}(\textbf{u}_i)\]
+
+Defining $\alpha_i = u_i y_i$ and know that $y_i y_i = 1$ because $y_i \in \{-1, 1\}$ we can see that:
+\[f^*(-\textbf{A}^*\textbf{u}) = \frac{1}{2} \alpha^*\textbf{K}_y\alpha\]
+
+and
+\[g^*(\textbf{u}) = - \langle \textbf{1}_n, \alpha \rangle + \sum_{i=1}^{n} i_{\left[0, \frac{1}{\lambda n}\right]}(\alpha_i)\]
+
+where $(\textbf{K}_y)_{i, j} = y_i \textbf{K}_{i, j} y_j$.
+
+Combining, we have our dual problem:
+\[\min_{\alpha \in \mathbb{R}^n} \frac{1}{2} \alpha^*\textbf{K}_y\alpha - \langle \textbf{1}_n, \alpha \rangle + \sum_{i=1}^{n} i_{\left[0, \frac{1}{\lambda n}\right]}(\alpha_i)\]
+
+\newpage
+\subsection*{4.1}
+
+The Fast Iterative Shrinkage Threshold Algorithm (FISTA):
+
+\[\alpha_{k+1} = prox_{\gamma g^*(\cdot)}\bigg(\nu_k + \gamma \textbf{A}_y \nabla f^*(-\textbf{A}_y^* \alpha_{k})\bigg)\]
+
+\[\nu_{k+1} = \alpha_{k} + \frac{t_k - 1}{t_{k+1}}(\alpha_{k+1}-\alpha_{k})\]
+
+where $t_k = \frac{1+\sqrt{1+ 4 (t_{k-1})^2}}{2}$ or $t_k = \frac{k+a}{a}$ with $a \geq 2$. For our implementation we chose the first definition for $t_k$.
+
+For our dual problem:
+
+\[\nabla f^*(-\textbf{A}_y^* \alpha_{k})) = -\textbf{A}_y^* \alpha_{k}\]
 
 and
 
-\[f(w) = \frac{\lambda}{2}\| w\|^2\]
+\[prox_{\gamma g^*(\cdot)}(\omega) = \begin{cases}
+      0, &  \text{if } \omega < 0\\
+      \omega, &  \text{if } 0 \leq \omega \leq \frac{1}{\gamma n} \\
+      \frac{1}{\gamma n}, & \text{if } \frac{1}{\gamma n} < \omega \\
+   \end{cases}\]
 
-The corresponding dual problem:
-
-\[\min_{\alpha \in \mathbb{R}^n} \frac{1}{2} \langle \mathbf{K}_y \alpha, \alpha \rangle - \langle \textbf{1}_n, \alpha\rangle + \sum_{i=1}^{n} i_{\left[0, \frac{1}{\lambda n}\right]}(\alpha_i)\]
-
-
-We can express in the form:
-
-\[\min_{\alpha \in \mathbb{R}^n} g^*(\alpha) + f^*(\alpha)\]
-
-
-\subsection*{4.1}
-
-\subsection*{4.2}
-
-\newpage
-\subsection*{4.3}
+With FISTA implemented, we can plot the dual objective function:
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.4]{outputs/part_4/initial-contour}
+\includegraphics[scale=0.3]{outputs/part_4/fista-loss}
+\caption{FISTA Loss}
+\label{fig:}
+\end{figure}
+
+
+\subsection*{4.2}
+
+We can also implement the Randomised Coordinate Projected Gradient Algorithm on the dual problem and plot the dual objective function:
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.3]{outputs/part_4/rcpga-loss}
+\caption{RCPGA Loss}
+\label{fig:}
+\end{figure}
+\newpage
+
+\subsection*{4.3}
+
+We can plot the decision boundary for the randomly initialised $\alpha$ vector as well as the two classes:
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.35]{outputs/part_4/initial-contour}
 \caption{Initial Contour Plot}
 \label{fig:}
 \end{figure}
+
+Similarly for each algorithm, we can plot the decision boundaries from the learned $\alpha$:
 
 
 \begin{figure}[h]
 \centering
 \begin{minipage}{.5\textwidth}
   \centering
-\includegraphics[scale=0.4]{outputs/part_4/rcpga-contour}
+\includegraphics[scale=0.35]{outputs/part_4/rcpga-contour}
 \caption{RCPGA Contour Plot}
 \label{fig:}
 \end{minipage}%
 \begin{minipage}{.5\textwidth}
   \centering
-\includegraphics[scale=0.4]{outputs/part_4/fista-contour}
+\includegraphics[scale=0.35]{outputs/part_4/fista-contour}
 \caption{FISTA Contour Plot}
 \label{fig:}
 \end{minipage}
 \end{figure}
 
 \subsection*{4.4}
-
-\begin{figure}[h]
-\centering
-\begin{minipage}{.5\textwidth}
-  \centering
-\includegraphics[scale=0.3]{outputs/part_4/rcpga-loss}
-\caption{RCPGA Loss}
-\label{fig:}
-\end{minipage}%
-\begin{minipage}{.5\textwidth}
-  \centering
-\includegraphics[scale=0.3]{outputs/part_4/fista-loss}
-\caption{FISTA Loss}
-\label{fig:}
-\end{minipage}
-\end{figure}
+Comparing the two algorithms, we can see that both are able to converge to $\alpha$ vectors producing decision boundaries that successfully separate the two training points for the two classes. However, the FISTA decision boundary is quite close to the points for both classes (i.e. the decision boundary is not as curves as for RCPGA). Thus, the quality of the solution is not as nice as the RCPGA where there is ample buffer surrounding the decision boundary for both classes. This would seem that RCPGA can produce more reasonable results, however considering the loss function plots for both algorithms, we can see that this comes at a tradeoff of computational resources/speed. FISTA is able to converge in around 50 iterations whereas RCPGA required on the order of $3\times 10^{5}$ iterations. Although each FISTA step involves two steps (to calculate $\alpha_{k+1}$ and $\nu_{k+1}$), this is still a much faster algorithm than RCGPA. Thus, depending on the practical use case, if there is a requirement on the algorithm's speed, then FISTA may be more appropriate. On the other hand, if we have more resources available, then RCGPA may be more appropriate as it seems to produce more reasonable/accurate results.
 
 \end{document}

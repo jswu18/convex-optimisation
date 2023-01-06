@@ -238,7 +238,7 @@ class HalfMoonsProblem(Problem):
         :param sigma: kernel length scale
         :return: kernel evaluation k(x, y)
         """
-        diff = x - y
+        diff = np.abs(x - y)
         return np.exp(-diff.T @ diff / (2 * sigma**2)).item()
 
     @staticmethod
@@ -277,14 +277,15 @@ class HalfMoonsProblem(Problem):
         return np.clip(x, 0, 1 / (lambda_parameter * self.n))
 
     @staticmethod
-    def indicator_function(x) -> float:
+    def indicator_function(x, scale) -> float:
         """
         Indicator function on [0, 1]^n
 
         :param x: current solution (number of training points, 1)
-        :return: if x lies in [0, 1]^n then 0, otherwise infinity
+        :param scale: upper bound
+        :return: if x lies in [0, scale]^n then 0, otherwise infinity
         """
-        return float("inf") if np.sum(x < 0) + np.sum(x > 1) else 0
+        return float("inf") if np.sum(x < 0) + np.sum(x > scale) else 0
 
     def loss(self, x: np.ndarray, lambda_parameter: float) -> float:
         """
@@ -297,8 +298,8 @@ class HalfMoonsProblem(Problem):
         scale = 1 / (lambda_parameter * self.n)
         return (
             0.5 * x.T @ self.a_matrix @ x
-            - scale * np.sum(x)
-            + self.indicator_function(x / scale)
+            - np.sum(x)
+            + self.indicator_function(x, scale)
         ).item()
 
     def grad_f_j(self, x: np.ndarray, j) -> float:
