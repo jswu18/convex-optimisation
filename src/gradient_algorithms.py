@@ -44,7 +44,7 @@ class ProximalStochasticGradientAlgorithm(GradientAlgorithm):
         """
 
         return self.problem.n / (
-            np.linalg.norm(self.problem.a_matrix) ** 2 * np.sqrt(k + 1)
+            np.linalg.norm(self.problem.a_matrix, ord=np.inf) ** 2 * np.sqrt(k + 1)
         )
 
     def run(
@@ -107,9 +107,7 @@ class RandomizedCoordinateProximalGradientAlgorithm(GradientAlgorithm):
         :param j: dimension index
         :return: gamma_j for the rcpga algorithm
         """
-        return self.problem.n / (
-            self.problem.a_matrix_j(j).T @ self.problem.a_matrix_j(j)
-        )
+        return self.problem.n / (np.linalg.norm(self.problem.a_matrix_j(j)) ** 2)
 
     def run(
         self, x, lambda_parameter, number_of_steps
@@ -141,34 +139,14 @@ class RandomizedCoordinateProximalGradientAlgorithm(GradientAlgorithm):
 class RandomizedCoordinateProjectedGradientAlgorithm(
     RandomizedCoordinateProximalGradientAlgorithm
 ):
-    def __init__(self, problem: HalfMoonsProblem):
-        super().__init__(problem)
-        self.problem = problem
-
-    def run(
-        self, x, lambda_parameter, number_of_steps
-    ) -> Tuple[np.ndarray, List[float]]:
+    def calculate_gamma_parameter(self, j: int) -> float:
         """
-        The RCPGA (projection) algorithm.
+        gamma = 1/(||a_j||^2)
 
-        :param x: initial solution (number of dimension, 1)
-        :param lambda_parameter: scalar on g(x) of the minimization problem
-        :param number_of_steps: number of steps to run the algorithm
-        :return: optimised solution from RCPGA and list of loss values at each iteration
+        :param j: dimension index
+        :return: gamma_j for the rcpga algorithm
         """
-        loss = [self.problem.loss(x, lambda_parameter)]
-        for k in range(number_of_steps):
-            j = self.generate_random_dimension_index()
-            gamma_parameter_j = self.calculate_gamma_parameter(j)
-            x[j] = self.problem.projection_operator(
-                x=(
-                    x[j]
-                    - (gamma_parameter_j / self.problem.n) * self.problem.grad_f_j(x, j)
-                ),
-                lambda_parameter=lambda_parameter,
-            )
-            loss.append(self.problem.loss(x, lambda_parameter))
-        return x, loss
+        return 1 / (np.linalg.norm(self.problem.a_matrix_j(j)) ** 2)
 
 
 class FastIterativeShrinkageThresholdAlgorithm(GradientAlgorithm):
@@ -177,23 +155,44 @@ class FastIterativeShrinkageThresholdAlgorithm(GradientAlgorithm):
         self.problem = problem
 
     @staticmethod
-    def calculate_new_t(t):
+    def calculate_new_t(t: float) -> float:
+        """
+        t_new = (1+sqrt(1+4*t**2))/(2)
+        :param t: current t value
+        :return: new t value
+        """
         return (1 + np.sqrt(1 + 4 * t**2)) / 2
 
     def calculate_gamma_parameter(self) -> float:
-        return 2 * self.problem.n / (np.linalg.norm(self.problem.a_matrix) ** 2)
+        """
+        gamma = 1/(||A||^2)
+
+        :return: gamma value
+        """
+        return 1 / (np.linalg.norm(self.problem.a_matrix, ord=np.inf) ** 2)
 
     def run(
         self, x, lambda_parameter, number_of_steps
     ) -> Tuple[np.ndarray, List[float]]:
+        """
+        The FISTA Algorithm.
+
+        :param x: initial solution (number of dimension, 1)
+        :param lambda_parameter: scalar on g(x) of the minimization problem
+        :param number_of_steps: number of steps to run the algorithm
+        :return: optimised solution from FISTA and list of loss values at each iteration
+        """
         t = 1
-        v = np.random.randn(self.problem.n)
+        v = np.random.uniform(
+            low=0,
+            high=1 / (lambda_parameter * self.problem.n),
+            size=(self.problem.n,),
+        ).reshape(-1, 1)
         gamma_parameter = self.calculate_gamma_parameter()
         loss = [self.problem.loss(x, lambda_parameter)]
         for _ in range(number_of_steps):
-            # import pdb; pdb.set_trace()
             x_new = self.problem.proximity_operator(
-                x=v + gamma_parameter * self.problem.a_matrix @ self.problem.grad_f(v),
+                x=v + gamma_parameter * self.problem.a_matrix @ self.problem.grad_f(x),
                 gamma_parameter=gamma_parameter,
                 lambda_parameter=lambda_parameter,
             )

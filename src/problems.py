@@ -20,10 +20,12 @@ class Problem(ABC):
 
     @property
     def n(self):
+        #  number of points
         return self.a_matrix.shape[0]
 
     @property
     def d(self):
+        #  number of dimensions
         return self.a_matrix.shape[1]
 
     def a_matrix_i(self, i: int):
@@ -182,10 +184,10 @@ class SparseProblem(Problem):
         """
         Generate xs vectors with entries in [0.5, 1] and [-1, -0.5] respectively.
 
-        :param number_of_samples:
-        :param number_of_dimensions:
-        :param sparsity:
-        :param std:
+        :param number_of_samples: number of samples to generate
+        :param number_of_dimensions: number of dimensions to generate
+        :param sparsity: the number of non-zero elements in x_sparse
+        :param std: standard deviation parameterizing epsilon, the noise added to the observed response y
         :return: spare problem
         """
 
@@ -216,7 +218,7 @@ class HalfMoonsProblem(Problem):
 
         :param x: design_matrix of training points (number of training points, 2)
         :param y: the response label -1 or 1 (number of training points, 1)
-        :param sigma: noise parameter during data generation process
+        :param sigma: kernel length scale
         """
         self.x = x
         self.sigma = sigma
@@ -261,55 +263,78 @@ class HalfMoonsProblem(Problem):
                 )
         return gram_matrix
 
-    @staticmethod
     def proximity_operator(
-        x: np.ndarray, gamma_parameter: float, lambda_parameter: float
+        self, x: np.ndarray, gamma_parameter: float, lambda_parameter: float
     ) -> np.ndarray:
         """
+        Projection to the convex set [0, 1/(lambda*n)]^n
 
         :param x: current solution (number of training points, 1)
-        :param gamma_parameter: scalar dictating the step size
-        :param lambda_parameter: scalar on g(x) of the minimization problem
-        :return: soft_threshold(x) vector (number of dimensions, 1)
-        """
-        rho = gamma_parameter / lambda_parameter
-        out = np.copy(x)
-        mask_1 = x > 1
-        out[mask_1] = 0
-
-        mask_2 = x < (1 - rho)
-        out[mask_2] = rho
-
-        out[~(mask_1 | mask_2)] = 1 - x[~(mask_1 | mask_2)]
-        return out
-
-    def projection_operator(self, x: np.ndarray, lambda_parameter: float) -> np.ndarray:
-        """
-
-        :param x: current solution (number of training points, 1)
+        :param gamma_parameter: unused
         :param lambda_parameter: scalar on g(x) of the minimization problem
         :return: projection(x) vector (number of dimensions, 1)
         """
         return np.clip(x, 0, 1 / (lambda_parameter * self.n))
 
+    @staticmethod
+    def indicator_function(x) -> float:
+        """
+        Indicator function on [0, 1]^n
+
+        :param x: current solution (number of training points, 1)
+        :return: if x lies in [0, 1]^n then 0, otherwise infinity
+        """
+        return float("inf") if np.sum(x < 0) + np.sum(x > 1) else 0
+
     def loss(self, x: np.ndarray, lambda_parameter: float) -> float:
-        indicator = (
-            np.float("inf")
-            if np.sum(x < 0) + np.sum(x > (1 / (lambda_parameter * self.n)))
-            else 0
-        )
-        return (0.5 * x.T @ self.a_matrix @ x - np.sum(x) + indicator).item()
+        """
+        Loss function for classification problem
+
+        :param x: current solution (number of training points, 1)
+        :param lambda_parameter: scalar on g(x) of the minimization problem
+        :return: current loss
+        """
+        scale = 1 / (lambda_parameter * self.n)
+        return (
+            0.5 * x.T @ self.a_matrix @ x
+            - scale * np.sum(x)
+            + self.indicator_function(x / scale)
+        ).item()
 
     def grad_f_j(self, x: np.ndarray, j) -> float:
+        """
+        Gradient of <alpha*, K_y alpha> w.r.t. alpha_j
+            j = 1, ..., d
+
+        :param x: current solution (number of dimension, 1)
+        :param j: dimension for which we want the gradient
+        :return: the gradient of the jth dimension at x
+        """
         return self.a_matrix_j(j).T @ x
 
-    def grad_f(self, x: np.ndarray) -> float:
-        return self.a_matrix.T @ x
+    def grad_f(self, x: np.ndarray) -> np.ndarray:
+        """
+        Gradient of f(-A^* alpha)
+
+        :param x: current solution (number of dimension, 1)
+        :return: the gradient of f evaluated at -A^* alpha
+        """
+        return -self.a_matrix.T @ x
 
     @staticmethod
     def generate(
         number_of_samples: int, noise: float, sigma: float, random_state: int
     ) -> HalfMoonsProblem:
+        """
+        Generate a Half Moons Probelm
+
+        :param number_of_samples: number of samples to generate
+        :param noise: noise in data
+        :param sigma: kernel length scale
+        :param random_state: randomisation statea
+        :return: Half Moons Problem
+        """
+
         x, y = make_moons(
             n_samples=number_of_samples, noise=noise, random_state=random_state
         )
@@ -320,7 +345,14 @@ class HalfMoonsProblem(Problem):
             sigma=sigma,
         )
 
-    def predict(self, alpha, x):
+    def predict(self, alpha: np.ndarray, x: np.ndarray) -> np.ndarray:
+        """
+        Make a classification prediction
+
+        :param alpha: current weight vector for each training point (number of dimension, 1)
+        :param x: test points (number of test points, 2)
+        :return: predictions vector (number of test points, 1) where each element is -1 or 1
+        """
         gram_matrix = self.calculate_gram(self.sigma, self.x, x)
         return np.sign(
             gram_matrix.T @ np.multiply(self.y.reshape(-1, 1), alpha.reshape(-1, 1))

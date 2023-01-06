@@ -535,23 +535,33 @@ and $j_k$ is sampled uniformly from $\{1, ..., d\}$ at each step $k$.
 \newpage
 \subsection*{3.3}
 
+The initial vector passed to the algorithms:
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.35]{outputs/part_3/initial-x}
+\caption{$x_0$ vs Sparse Vector}
+\label{fig:}
+\end{figure}
+
 Plotting the objective function values vs the number of iterations for both the algorithms:
 
 \begin{figure}[h]
 \centering
 \begin{minipage}{.5\textwidth}
   \centering
-\includegraphics[scale=0.4]{outputs/part_3/psga-loss}
-\caption{PSGA}
+\includegraphics[scale=0.3]{outputs/part_3/psga-loss}
+\caption{PSGA Loss}
 \label{fig:}
 \end{minipage}%
 \begin{minipage}{.5\textwidth}
   \centering
-\includegraphics[scale=0.4]{outputs/part_3/rcpga-loss}
-\caption{RCPGA}
+\includegraphics[scale=0.3]{outputs/part_3/rcpga-loss}
+\caption{RCPGA Loss}
 \label{fig:}
 \end{minipage}
 \end{figure}
+
 
 The corresponding solution compared to the actual sparse vector for both the algorithms:
 
@@ -559,14 +569,14 @@ The corresponding solution compared to the actual sparse vector for both the alg
 \centering
 \begin{minipage}{.5\textwidth}
   \centering
-\includegraphics[scale=0.4]{outputs/part_3/psga-x}
-\caption{PSGA}
+\includegraphics[scale=0.35]{outputs/part_3/psga-x}
+\caption{PSGA Solution vs Sparse Vector}
 \label{fig:}
 \end{minipage}%
 \begin{minipage}{.5\textwidth}
   \centering
-\includegraphics[scale=0.4]{outputs/part_3/rcpga-x}
-\caption{RCPGA}
+\includegraphics[scale=0.35]{outputs/part_3/rcpga-x}
+\caption{RCPGA Solution vs Sparse Vector}
 \label{fig:}
 \end{minipage}
 \end{figure}
@@ -610,8 +620,8 @@ We can express in the form:
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.25]{outputs/part_4/initial-contour}
-\caption{$\alpha^{(0)}$ Contour Plot}
+\includegraphics[scale=0.4]{outputs/part_4/initial-contour}
+\caption{Initial Contour Plot}
 \label{fig:}
 \end{figure}
 
@@ -620,13 +630,13 @@ We can express in the form:
 \centering
 \begin{minipage}{.5\textwidth}
   \centering
-\includegraphics[scale=0.25]{outputs/part_4/rcpga-contour}
+\includegraphics[scale=0.4]{outputs/part_4/rcpga-contour}
 \caption{RCPGA Contour Plot}
 \label{fig:}
 \end{minipage}%
 \begin{minipage}{.5\textwidth}
   \centering
-\includegraphics[scale=0.25]{outputs/part_4/fista-contour}
+\includegraphics[scale=0.4]{outputs/part_4/fista-contour}
 \caption{FISTA Contour Plot}
 \label{fig:}
 \end{minipage}
@@ -638,13 +648,13 @@ We can express in the form:
 \centering
 \begin{minipage}{.5\textwidth}
   \centering
-\includegraphics[scale=0.4]{outputs/part_4/rcpga-loss}
+\includegraphics[scale=0.3]{outputs/part_4/rcpga-loss}
 \caption{RCPGA Loss}
 \label{fig:}
 \end{minipage}%
 \begin{minipage}{.5\textwidth}
   \centering
-\includegraphics[scale=0.4]{outputs/part_4/fista-loss}
+\includegraphics[scale=0.3]{outputs/part_4/fista-loss}
 \caption{FISTA Loss}
 \label{fig:}
 \end{minipage}

@@ -3,7 +3,7 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 
-from constants import DEFAULT_SEED, OUTPUTS_FOLDER
+from constants import DEFAULT_SEED, FEATURE_THRESHOLD, OUTPUTS_FOLDER
 from helpers import plot_loss
 from src.gradient_algorithms import (
     ProximalStochasticGradientAlgorithm,
@@ -36,8 +36,8 @@ def plot_dimensions(
         label="$x^*$",
     )
     ax.stem(
-        np.arange(d)[np.abs(x) > 0],
-        x[np.abs(x) > 0],
+        np.arange(d)[np.abs(x) > FEATURE_THRESHOLD],
+        x[np.abs(x) > FEATURE_THRESHOLD],
         label=r"$x_{\tau, \lambda}$",
         linefmt="k:",
         markerfmt="k^",
@@ -46,7 +46,7 @@ def plot_dimensions(
     ax.set_xlim([-10 + 0, d + 10])
     ax.set_ylim([-1.1, 1.1])
     ax.set_xlabel("index $i$")
-    ax.set_ylabel("$x_i$")
+    ax.set_ylabel(f"$x_i$ ({FEATURE_THRESHOLD=})")
     ax.legend()
     plt.title(f"Sparse Solution vs Actual ({algorithm})")
     plt.savefig(save_path, bbox_inches="tight")
@@ -68,8 +68,14 @@ def part_3():
         std=0.06,
     )
     x0 = np.random.randn(sparse_problem.d).reshape(-1, 1)
-    lambda_parameter = 5e-2
-    number_of_steps = int(1e6)
+    plot_dimensions(
+        x=x0,
+        x_sparse=sparse_problem.x_sparse,
+        algorithm=f"Initialised Vector (x0)",
+        save_path=os.path.join(part_3_output_folder, f"initial-x"),
+    )
+    lambda_parameter = 3e-1
+    number_of_steps = int(5e5)
 
     # Proximal Stochastic Gradient Algorithm
     proximal_stochastic_gradient_algorithm = ProximalStochasticGradientAlgorithm(
@@ -85,7 +91,7 @@ def part_3():
         x=x_psga,
         x_sparse=sparse_problem.x_sparse,
         algorithm=f"Proximal Stochastic Gradient Algorithm (x), {lambda_parameter=}",
-        save_path=os.path.join(part_3_output_folder, "psga-x"),
+        save_path=os.path.join(part_3_output_folder, f"psga-x"),
     )
 
     proximal_stochastic_gradient_algorithm.is_ergodic_mean = True
@@ -98,17 +104,17 @@ def part_3():
         x=x_psga_ergodic,
         x_sparse=sparse_problem.x_sparse,
         algorithm=f"Proximal Stochastic Gradient Algorithm (x_bar), {lambda_parameter=}",
-        save_path=os.path.join(part_3_output_folder, "psga-x-bar"),
+        save_path=os.path.join(part_3_output_folder, f"psga-x-bar"),
     )
-
     plot_loss(
         losses=[loss_psga_ergodic, loss_psga],
         labels=["x_bar (ergodic mean)", "x"],
         algorithm=f"Proximal Stochastic Gradient Algorithm, {lambda_parameter=}",
-        save_path=os.path.join(part_3_output_folder, "psga-loss"),
+        save_path=os.path.join(part_3_output_folder, f"psga-loss"),
     )
 
     # Randomized Coordinate Proximal Gradient Algorithm
+    lambda_parameter = 5e-2
     number_of_steps = int(1e4)
     randomized_coordinate_proximal_gradient_algorithm = (
         RandomizedCoordinateProximalGradientAlgorithm(sparse_problem)
