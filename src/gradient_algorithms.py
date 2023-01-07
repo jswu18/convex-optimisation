@@ -14,6 +14,14 @@ class GradientAlgorithm(ABC):
     def run(
         self, x: np.ndarray, lambda_parameter: float, number_of_steps: int
     ) -> Tuple[np.ndarray, List[float]]:
+        """
+        Run the gradient based algorithm.
+
+        :param x: initial solution (number of dimension, 1)
+        :param lambda_parameter: scalar on g(x) of the minimization problem
+        :param number_of_steps: number of steps to run the algorithm
+        :return: optimised solution from algorithm and list of loss values at each iteration
+        """
         pass
 
 
@@ -22,7 +30,7 @@ class ProximalStochasticGradientAlgorithm(GradientAlgorithm):
         """
         The Proximal Stochastic Gradient Algorithm.
 
-        :param problem: problem object
+        :param problem: sparse problem
         :param is_ergodic_mean: whether to use the ergodic mean for loss calculation
         """
         self.is_ergodic_mean = is_ergodic_mean
@@ -91,6 +99,11 @@ class ProximalStochasticGradientAlgorithm(GradientAlgorithm):
 
 class RandomizedCoordinateProximalGradientAlgorithm(GradientAlgorithm):
     def __init__(self, problem: Problem):
+        """
+        The Randomized Coordinate Proximal Gradient Algorithm.
+
+        :param problem: the problem
+        """
         super().__init__(problem)
 
     def generate_random_dimension_index(self) -> int:
@@ -103,6 +116,7 @@ class RandomizedCoordinateProximalGradientAlgorithm(GradientAlgorithm):
     def calculate_gamma_parameter(self, j: int) -> float:
         """
         gamma = mu/(||a_j||^2)
+        where mu is the coefficient of strong convexity
 
         :param j: dimension index
         :return: gamma_j for the rcpga algorithm
@@ -138,6 +152,11 @@ class RandomizedCoordinateProximalGradientAlgorithm(GradientAlgorithm):
 
 class FastIterativeShrinkageThresholdAlgorithm(GradientAlgorithm):
     def __init__(self, problem: HalfMoonsProblem):
+        """
+        The Fast Iterative Shrinkage Threshold Algorithm.
+
+        :param problem: half moons problem
+        """
         super().__init__(problem)
         self.problem = problem
 
