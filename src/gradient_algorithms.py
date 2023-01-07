@@ -171,11 +171,15 @@ class FastIterativeShrinkageThresholdAlgorithm(GradientAlgorithm):
 
     def calculate_gamma_parameter(self) -> float:
         """
-        gamma = 1/(||A||^2)
+        gamma = mu/L
+        where L is the lipschitz constant of A^*A
 
         :return: gamma value
         """
-        return 1 / (np.linalg.norm(self.problem.a_matrix, ord=np.inf) ** 2)
+        lipschitz_constant = np.linalg.eigvalsh(
+            self.problem.a_matrix.T @ self.problem.a_matrix
+        )[-1]
+        return self.problem.mu / lipschitz_constant
 
     def run(
         self, x, lambda_parameter, number_of_steps

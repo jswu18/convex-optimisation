@@ -55,7 +55,6 @@ def plot_dimensions(
 
 
 def part_3():
-    np.random.seed(DEFAULT_SEED)
     part_3_output_folder = os.path.join(OUTPUTS_FOLDER, "part_3")
     if not os.path.exists(part_3_output_folder):
         os.makedirs(part_3_output_folder)
@@ -73,10 +72,10 @@ def part_3():
         algorithm=f"Initialised Vector (x0)",
         save_path=os.path.join(part_3_output_folder, f"initial-x"),
     )
-    lambda_parameter = 3e-1
-    number_of_steps = int(5e5)
 
     # Proximal Stochastic Gradient Algorithm
+    lambda_parameter = 3e-1
+    number_of_steps = int(5e5)
     proximal_stochastic_gradient_algorithm = ProximalStochasticGradientAlgorithm(
         sparse_problem,
         is_ergodic_mean=False,
@@ -136,4 +135,5 @@ def part_3():
 
 
 if __name__ == "__main__":
+    np.random.seed(DEFAULT_SEED)
     part_3()

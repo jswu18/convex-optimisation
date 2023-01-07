@@ -652,7 +652,7 @@ We can plot the decision boundary for the randomly initialised $\alpha$ vector a
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.35]{outputs/part_4/initial-contour}
+\includegraphics[scale=0.3]{outputs/part_4/initial-contour}
 \caption{Initial Contour Plot}
 \label{fig:}
 \end{figure}
@@ -664,19 +664,19 @@ Similarly for each algorithm, we can plot the decision boundaries from the learn
 \centering
 \begin{minipage}{.5\textwidth}
   \centering
-\includegraphics[scale=0.35]{outputs/part_4/rcpga-contour}
+\includegraphics[scale=0.3]{outputs/part_4/rcpga-contour}
 \caption{RCPGA Contour Plot}
 \label{fig:}
 \end{minipage}%
 \begin{minipage}{.5\textwidth}
   \centering
-\includegraphics[scale=0.35]{outputs/part_4/fista-contour}
+\includegraphics[scale=0.3]{outputs/part_4/fista-contour}
 \caption{FISTA Contour Plot}
 \label{fig:}
 \end{minipage}
 \end{figure}
 
 \subsection*{4.4}
-Comparing the two algorithms, we can see that both are able to converge to $\alpha$ vectors producing decision boundaries that are relatively successful at separating the majority of the training points for the two classes. However, the FISTA decision boundary misses a couple points for both classes with a decision boundary that is rather close to boundary points of each class. Thus, the quality of the solution is not as nice as the RCPGA where there are ample buffer zones surrounding the decision boundary for both classes. This would seem that RCPGA can produce better results, however considering the loss function plots for both algorithms, we can see that this comes at a tradeoff of computational resources/speed. FISTA is able to converge in around 50 iterations whereas RCPGA required on the order of $3\times 10^{5}$ iterations. Although each FISTA step involves two steps (to calculate $\alpha_{k+1}$ and $\nu_{k+1}$), this is still a much faster algorithm than RCGPA. Thus, depending on the practical use case, if there is a requirement for algorithm speed, then FISTA may be more appropriate. On the other hand, if we have more resources available, then RCGPA may be more appropriate as it seems to produce more reasonable/accurate results.
+Comparing the two algorithms, we can see that both are able to converge to $\alpha$ vectors producing decision boundaries that are successful at separating the training points for the two classes. It is difficult to determine which of the two decision boundaries are more suitable for the training data, without more context about the data itself. However considering the loss function plots for both algorithms, we can see that FISTA is able to converge in around 20 iterations whereas RCPGA required on the order of $3\times 10^{5}$ iterations. Although each FISTA step involves two steps (to calculate $\alpha_{k+1}$ and $\nu_{k+1}$), this is still a much faster algorithm than RCGPA. However, we can also see that the objective function for FISTA is much less smooth compared to RCGPA. Depending on use case, this may or may not be a problem. Overall, FISTA is able to produce quality decision boundaries much faster than RCGPA.
 
 \end{document}

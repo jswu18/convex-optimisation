@@ -28,6 +28,12 @@ class Problem(ABC):
         #  number of dimensions
         return self.a_matrix.shape[1]
 
+    @property
+    @abstractmethod
+    def mu(self) -> float:
+        # Strong convexity coefficient
+        pass
+
     def a_matrix_i(self, i: int):
         """
         ith row of the A matrix
@@ -104,14 +110,6 @@ class Problem(ABC):
         """
         pass
 
-    @property
-    @abstractmethod
-    def mu(self) -> float:
-        """
-        :return: strong convexity coefficient
-        """
-        pass
-
 
 class SparseProblem(Problem):
     def __init__(
@@ -140,6 +138,7 @@ class SparseProblem(Problem):
 
     @property
     def mu(self) -> float:
+        # Strong convexity coefficient
         return self.n
 
     @staticmethod
@@ -202,7 +201,6 @@ class SparseProblem(Problem):
         :param std: standard deviation parameterizing epsilon, the noise added to the observed response y
         :return: spare problem
         """
-
         assert sparsity % 2 == 0, f"{sparsity=} needs to be divisible by 2"
         xsp = 0.5 * (np.random.rand(sparsity // 2) + 1)
         xsn = -0.5 * (np.random.rand(sparsity // 2) + 1)
@@ -242,6 +240,7 @@ class HalfMoonsProblem(Problem):
 
     @property
     def mu(self) -> float:
+        # Strong convexity coefficient
         return 1
 
     @staticmethod
@@ -343,15 +342,14 @@ class HalfMoonsProblem(Problem):
         number_of_samples: int, noise: float, sigma: float, random_state: int
     ) -> HalfMoonsProblem:
         """
-        Generate a Half Moons Probelm
+        Generate a Half Moons Problem
 
         :param number_of_samples: number of samples to generate
         :param noise: noise in data
         :param sigma: kernel length scale
-        :param random_state: randomisation statea
+        :param random_state: randomisation state
         :return: Half Moons Problem
         """
-
         x, y = make_moons(
             n_samples=number_of_samples, noise=noise, random_state=random_state
         )

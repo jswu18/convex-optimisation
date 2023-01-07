@@ -1,5 +1,4 @@
 import os
-from typing import List
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -14,7 +13,11 @@ from src.problems import HalfMoonsProblem
 
 
 def plot_contour(
-    half_moons_problem: HalfMoonsProblem, x: np.ndarray, algorithm: str, save_path: str
+    half_moons_problem: HalfMoonsProblem,
+    x: np.ndarray,
+    contour_resolution: int,
+    algorithm: str,
+    save_path: str,
 ) -> None:
     x_min = np.min(half_moons_problem.x[:, 0]) - 0.1
     x_max = np.max(half_moons_problem.x[:, 0]) + 0.1
@@ -23,12 +26,12 @@ def plot_contour(
     x_ticks = np.linspace(
         x_min,
         x_max,
-        1000,
+        contour_resolution,
     )
     y_ticks = np.linspace(
         y_min,
         y_max,
-        1000,
+        contour_resolution,
     )
 
     x1_grid, x2_grid = np.meshgrid(x_ticks, y_ticks)
@@ -37,8 +40,8 @@ def plot_contour(
     y_grid = half_moons_problem.predict(x.T, x_grid).reshape(-1)
     y = half_moons_problem.y.reshape(-1)
     fig, ax = plt.subplots(constrained_layout=True)
-    fig.set_figwidth(3 * (x_max - x_min))
-    fig.set_figheight(3 * (y_max - y_min))
+    fig.set_figwidth(3.5 * (x_max - x_min))
+    fig.set_figheight(3.5 * (y_max - y_min))
     cmap = plt.get_cmap("binary_r", 2)
     contour = ax.contourf(x1_grid, x2_grid, y_grid.reshape(x1_grid.shape), cmap=cmap)
     for label in set(y):
@@ -54,7 +57,7 @@ def plot_contour(
             label=label,
             c=colour,
             edgecolors=edge,
-            s=120,
+            s=50,
         )
     plt.legend()
     fig.colorbar(contour, ticks=[-1, 1])
@@ -63,16 +66,18 @@ def plot_contour(
     plt.close()
 
 
-def part_4():
-    np.random.seed(DEFAULT_SEED)
+def part_4(
+    contour_resolution: int,
+):
     part_4_output_folder = os.path.join(OUTPUTS_FOLDER, "part_4")
     if not os.path.exists(part_4_output_folder):
         os.makedirs(part_4_output_folder)
 
     number_of_samples = 200
+    sigma = 0.275
+    lambda_parameter = 3e-3
     x0 = np.random.randn(number_of_samples).reshape(-1, 1)
-    sigma = 0.4
-    lambda_parameter = 5e-3
+
     half_moons_problem = HalfMoonsProblem.generate(
         number_of_samples=number_of_samples,
         noise=0.05,
@@ -82,7 +87,8 @@ def part_4():
     plot_contour(
         half_moons_problem=half_moons_problem,
         x=x0,
-        algorithm=f"Initial Contour, {lambda_parameter=}, {sigma=}",
+        contour_resolution=contour_resolution,
+        algorithm=f"Initial Contour, {sigma=}",
         save_path=os.path.join(part_4_output_folder, "initial-contour"),
     )
 
@@ -93,6 +99,7 @@ def part_4():
     plot_contour(
         half_moons_problem=half_moons_problem,
         x=x_rcpga,
+        contour_resolution=contour_resolution,
         algorithm=f"Randomized Coordinate Projected Gradient Algorithm, {lambda_parameter=}, {sigma=}",
         save_path=os.path.join(part_4_output_folder, "rcpga-contour"),
     )
@@ -104,12 +111,13 @@ def part_4():
     )
 
     # Fast Iterative Shrinkage Threshold Algorithm
-    number_of_steps = 50
+    number_of_steps = 20
     fista = FastIterativeShrinkageThresholdAlgorithm(half_moons_problem)
     x_fista, loss_fista = fista.run(x0.copy(), lambda_parameter, number_of_steps)
     plot_contour(
         half_moons_problem=half_moons_problem,
         x=x_fista,
+        contour_resolution=contour_resolution,
         algorithm=f"Fast Iterative Shrinkage Threshold Algorithm, {lambda_parameter=}, {sigma=}",
         save_path=os.path.join(part_4_output_folder, "fista-contour"),
     )
@@ -122,4 +130,8 @@ def part_4():
 
 
 if __name__ == "__main__":
-    part_4()
+    np.random.seed(DEFAULT_SEED)
+    CONTOUR_RESOLUTION = 250
+    part_4(
+        contour_resolution=CONTOUR_RESOLUTION,
+    )
