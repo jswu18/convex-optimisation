@@ -37,13 +37,13 @@ class ProximalStochasticGradientAlgorithm(GradientAlgorithm):
 
     def calculate_gamma_parameter(self, k: int):
         """
-        gamma_k = n/(||A||^2 * sqrt (k+1))
+        gamma_k = mu/(||A||^2 * sqrt (k+1))
 
         :param k: step number
         :return: gamma_k for the psga algorithm
         """
 
-        return self.problem.n / (
+        return self.problem.mu / (
             np.linalg.norm(self.problem.a_matrix, ord=np.inf) ** 2 * np.sqrt(k + 1)
         )
 
@@ -102,7 +102,7 @@ class RandomizedCoordinateProximalGradientAlgorithm(GradientAlgorithm):
 
     def calculate_gamma_parameter(self, j: int) -> float:
         """
-        gamma = n/(||a_j||^2)
+        gamma = mu/(||a_j||^2)
 
         :param j: dimension index
         :return: gamma_j for the rcpga algorithm
