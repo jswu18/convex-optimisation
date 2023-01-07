@@ -59,7 +59,6 @@
 \subsection*{1.1}
 
 The function for (a):
-
 \[\max\{ax+b, x^4-5, e^{x^2}\}\]
 
 is a convex function.
@@ -67,83 +66,80 @@ is a convex function.
 \subsection*{1.2}
 
 For the function:
-
 \[f(x) = \begin{cases}
-      -x \tab \text{if } x \in ]-1, 0] \\
-      x^2 \tab \text{if } x \geq 0 \\
+      -x, & \text{if } x \in ]-1, 0] \\
+      x^2, & \text{if } x \geq 0 \\
    \end{cases}\]
 
 the sub-differential is:
-
 \[\partial f(x) = \begin{cases}
-      -1 \tab \text{if } x \in ]-1, 0[ \\
-      \left[0, 1\right] \tab \text{if } x = 0  \\
-      2x \tab \text{if } x > 0 \\
+      -1, & \text{if } x \in ]-1, 0[ \\
+      \left[0, 1\right], & \text{if } x = 0  \\
+      2x, & \text{if } x > 0 \\
    \end{cases}\]
 
 corresponding to Figure (a).
 
 \subsection*{1.3}
-For a function:
-\[f(x) = \langle Ax, x \rangle + \langle x, b\rangle + c\]
-
-where A is a square matrix not necessarily symmetric, the gradient is (a):
-
+For a function $f(x) = \langle Ax, x \rangle + \langle x, b\rangle + c$ where A is a square matrix not necessarily symmetric, the gradient is (a):
 \[\nabla f(x) = A^*x + Ax + b\]
-
 \subsection*{1.4}
-
 The Fenchel conjugate of $f(x) = g(2x)$ is (a):
-
 \[f^*(u) = g^*(u/2)\]
 
 \subsection*{1.5}
-
 The solution to the dual problem is (c):
-
 \[\bar{u} = (\textbf{K}+\lambda n \textbf{Id})^{-1} y\]
 
+\newpage
 \section*{Part 2: Theory on convex analysis and optimization}
 \subsection*{2.1}
 
+The Fenchel conjugate is defined as:
+
+\[f^*(u) = \sup_{x\in \mathcal{X}} \{ \langle x, u\rangle - f(x) \}\]
 
 \subsection*{2.1.1}
 
 Given :
 \[ f(x) = \begin{cases}
-      +\infty \tab \text{if } x \leq 0 \\
-      -\log x \tab \text{if } x > 0 \\
+      +\infty, & \text{if } x \leq 0 \\
+      -\log x, & \text{if } x > 0 \\
    \end{cases}\]
 
-The Fenchel conjugate is defined:
+Substituting into the Fenchel conjugate definition:
 
 \[f^*(u) = \sup_{x\in \mathcal{X}} \{ \langle x, u\rangle +  \log x \}\]
 
-To find the supremum, we can take the partial derivative with respect to $x$, set to zero, and solve for x:
+To find the supremum, we can take the partial derivative with respect to $x$, set to zero, and solve for $x$:
 
 \[\frac{\partial}{\partial x}(ux + logx) = u + \frac{1}{x} = 0\]
 
-Thus, the supremum above is solved when $x=\frac{-1}{u}$:
+Thus, the supremum above is acheived when $x=\frac{-1}{u}$:
 
 \[f^*(u) = u \left(\frac{-1}{u} \right) +  \log\left(\frac{-1}{u} \right) \]
 
 Simplifying, we have the Fenchel conjugate:
 
-\[f^*(u) = - (1 + \log u)\]
+\[ f(x) = \begin{cases}
+      - (1 + \log (-u), & \text{if } u < 0 \\
+      +\infty, & \text{if } u \geq 0 \\
+   \end{cases}\]
+
 
 \subsection*{2.1.2} Given:
 
 \[f(x) = x^2\]
 
-The Fenchel conjugate is defined:
+Substituting into the Fenchel conjugate definition:
 
 \[f^*(u) = \sup_{x\in \mathcal{X}} \{ \langle x, u\rangle - x^2 \}\]
 
-We can compute the partial derivative:
+We can compute the partial derivative with respect to $x$, set to zero, and solve for $x$:
 
 \[\frac{\partial}{\partial x}(ux - x^2) = u - 2x = 0\]
 
-Thus, the supremum is solved when $x=\frac{u}{2}$:
+Thus, the supremum is achieved when $x=\frac{u}{2}$:
 
 \[f^*(u) = u \left(\frac{u}{2} \right) -  \left(\frac{u}{2} \right)^2 \]
 
@@ -155,7 +151,7 @@ Simplifying, we have the Fenchel conjugate:
 
 \[f(x) = i_{\left[0, 1\right]}\]
 
-The Fenchel conjugate is defined:
+Substituting into the Fenchel conjugate definition:
 
 \[f^*(u) = \sup_{x\in \mathcal{X}} \{ \langle x, u\rangle - i_{\left[0, 1\right]} \}\]
 
@@ -163,10 +159,11 @@ Thus,
 
 \[f^*(u) = \sup_{x\in \left[0, 1\right]} \{ \langle x, u\rangle \}\]
 
-We can see the Fenchel conjugate is:
+We can see that the Fenchel conjugate is:
 
 \[ f^*(u) = \max(0, u)}\]
 
+is the ReLu function.
 
 \subsection*{2.2.1}
 
@@ -178,13 +175,11 @@ for all $x_1, ... x_n \in \mathcal{X}$ and for all $\lambda_1, ..., \lambda_n \i
 
 \[f(\lambda_1 x_1 + \lambda_2 x_2) \leq \lambda_1 f(x_1) + \lambda_2 f(x_2)\]
 
-for all $x1, x2 \in \mathcal{X}$ and $\lambda_1, \lambda_2 \in \mathbb{R}_+$ with $\lambda_1 + \lambda_2 = 1$. In this base case $n=2$.
-
-Our inductive step will prove that the inequality continues to hold for $n+1$:
+for all $x_1, x_2 \in \mathcal{X}$ and $\lambda_1, \lambda_2 \in \mathbb{R}_+$ with $\lambda_1 + \lambda_2 = 1$. In this base case $n=2$. Our inductive step will prove that the inequality continues to hold for $n+1$. We begin with:
 
 \[f\left(\sum_{i=1}^{n+1} \lambda_i x_i\right) = f\left(\sum_{i=1}^n \lambda_i x_i + \lambda_{n+1} x_{n+1}\right)\]
 
-We can insert the term $(1-\lambda_{n+1})$:
+where $\sum_{i=1}^{n+1} \lambda_i = 1$. We can insert the term $(1-\lambda_{n+1})$:
 
 \[f\left(\sum_{i=1}^{n+1} \lambda_i x_i\right) = f\left((1-\lambda_{n+1}) \sum_{i=1}^n \frac{\lambda_i}{1-\lambda_{n+1}} x_i + \lambda_{n+1} x_{n+1}\right)\]
 
@@ -193,26 +188,26 @@ If we define $\bar{x} = \sum_{i=1}^n \frac{\lambda_i}{1-\lambda_{n+1}} x_i$ and 
 
 \[ f\left((1-\lambda_{n+1})\bar{x} + \lambda_{n+1} x_{n+1}\right) \leq (1-\lambda_{n+1}) f\left( \bar{x}\right) + \lambda_{n+1} f\left( x_{n+1}\right)\]
 
-Rewriting this,
+Substituting the definition for $\bar{x}$:
 
 \[f\left(\sum_{i=1}^{n+1} \lambda_i x_i\right) \leq (1-\lambda_{n+1}) f\left( \sum_{i=1}^n \frac{\lambda_i}{1-\lambda_{n+1}} x_i\right) + \lambda_{n+1} f\left( x_{n+1}\right)\]
 
-We know that the first term on the right hand side:
+We know that from the known inequality from the $n$ case:
 
 \[f\left( \sum_{i=1}^n \frac{\lambda_i}{1-\lambda_{n+1}} x_i\right) = \frac{1}{{1-\lambda_{n+1}}}f\left( \sum_{i=1}^n \lambda_i x_i\right) \leq \frac{1}{{1-\lambda_{n+1}}} \sum_{i=1}^n \lambda_i f \left(x_i\right) =  \sum_{i=1}^n \frac{\lambda_i}{{1-\lambda_{n+1}}}  f \left(x_i\right)\]
 
-Thus can upper bound our previous inequality:
+Thus we can upper bound our previous inequality:
 
 
-\[f\left(\sum_{i=1}^{n+1} \lambda_i x_i\right)  \leq \sum_{i=1}^n \frac{\lambda_i}{{1-\lambda_{n+1}}}  f \left(x_i\right) + \lambda_{n+1} f\left( x_{n+1}\right) =\sum_{i=1}^{n+1} \frac{\lambda_i}{{1-\lambda_{n+1}}} f \left(x_i\right) \]
+\[f\left(\sum_{i=1}^{n+1} \lambda_i x_i\right)  \leq (1-\lambda_{n+1})\sum_{i=1}^n \frac{\lambda_i}{{1-\lambda_{n+1}}}  f \left(x_i\right) + \lambda_{n+1} f\left( x_{n+1}\right) =\sum_{i=1}^{n+1} \lambda_i f \left(x_i\right) \]
 
-proving our inductive step and Jensen's inequality as required. \square
+proving our inductive step for $n+1$ and Jensen's inequality as required. \square
 
 
 \subsection*{2.2.2}
 The characterisation of convexity states:
 
-\[\text{f is convex} \leftrightarrow \langle \nabla f(x) - \nabla f(y), x-y \rangle \geq 0\]
+\[\text{A function } f \text{ is convex} \leftrightarrow \langle \nabla f(x) - \nabla f(y), x-y \rangle \geq 0\]
 
 $\forall x, y \in dom f$.
 
@@ -223,7 +218,6 @@ For $f(x) = -\log(x)$, $\nabla f(x) = \frac{-1}{x}$:
 If $x>y$ we have the following:
 
 \begin{gather*}
-    \frac{1}{y} > \frac{1}{x}\\
     x-y>0\\
     \frac{1}{y} - \frac{1}{x} > 0\\
 \end{gather*}
@@ -233,7 +227,6 @@ and
 
 If $x<y$ we have the following:
 \begin{gather*}
-    \frac{1}{y} < \frac{1}{x}\\
     x-y<0\\
     \frac{1}{y} - \frac{1}{x} < 0\\
 \end{gather*}
@@ -243,7 +236,6 @@ and
 
 If $x=y$ we have the following:
 \begin{gather*}
-    \frac{1}{y} = \frac{1}{x}\\
     x-y=0\\
     \frac{1}{y} - \frac{1}{x} = 0\\
 \end{gather*}
@@ -251,7 +243,7 @@ If $x=y$ we have the following:
 and
 \[\langle \frac{1}{y}-\frac{1}{x}, x-y \rangle = 0\]
 
-Thus, $\forall x, y \in dom f, \langle \nabla f(x) - \nabla f(y), x-y \rangle \geq 0$ so $f(x) = -\log(x)$ is convex. \square
+Thus, $\forall x, y \in dom f, \langle \nabla f(x) - \nabla f(y), x-y \rangle \geq 0$ so by the characterization for differentiable functions, $f(x) = -\log(x)$ is convex. \square
 
 \subsection*{2.2.3}
 
@@ -278,28 +270,29 @@ The sum of logarithms is the logarithm of the products:
 
 Thus we get our inequality:
 
-\[\frac{1}{n}\sum_{i=1}^n x_i \geq \sqrt[n]{x_1 \cdots x_n}\] \square
+\[\frac{1}{n}\sum_{i=1}^n x_i \geq \sqrt[n]{x_1 \cdots x_n}\]
+
+for all $x_1, ..., x_n \in \mathbb{R}^+$ \square
+
 \subsection*{2.3}
 
 Given a polytope $C=co(a_1, ..., a_m)$ in $X$, we know that any point $x \in C$ can be expressed:
 
 \[x = \sum_{i=1}^{m} \lambda_i a_i \]
 
-where $\sum_{i=1}^{m} \lambda_i = 1$. Knowing that $f$ is a convex function on $C$, we can write Jensen's inequality for :
+where $\sum_{i=1}^{m} \lambda_i = 1$. Knowing that $f$ is a convex function on $C$, we can write Jensen's inequality:
 
 \[f\left(\sum_{i=1}^{m} \lambda_i a_i \right) \leq \sum_{i=1}^{m} \lambda_i f(a_i)\]
 
-where $\sum_{i=1}^{m} \lambda_i = 1$.
-
 Because $\sum_{i=1}^{m} \lambda_i f(a_i)$ is a weighted average of $f(a_i)$'s we know that:
 
-\[\sum_{i=1}^{m} \lambda_i f(a_i) \leq \max_{\{a_i\}_{i=1}^m} f(a_i)\]
+\[\sum_{i=1}^{m} \lambda_i f(a_i) \leq \max_{i} f(a_i)\]
 
 the weighted average will always be less than or equal to the maximum $f(a_i)$ value. Thus, we know that:
 
-\[f\left(\sum_{i=1}^{m} \lambda_i a_i \right) \leq \max_{\{a_i\}_{i=1}^m} f(a_i)\]
+\[f\left(\sum_{i=1}^{m} \lambda_i a_i \right) \leq \max_{i} f(a_i)\]
 
-So the maximum of the convex function $f$ on $C$ is attained at one of the vertices $a_1, ..., a_m$.
+So all function evaluations of $f(x)$ for $x \in C$ are less than or equal to the maximum of the function evaluations at the verticies $a_1, ..., a_m$ and so the maximum of the convex function $f$ on $C$ is attained at one of the vertices $a_1, ..., a_m$.
 \square
 
 \subsection*{2.4}
@@ -317,17 +310,17 @@ To prove that the function $f(x, y) = \| x-2y\|^2$ is convex, we will show that 
 Calculating each term:
 
 \[\nabla^2 f(x, y) = \begin{bmatrix}
-                 2 & 4\\
-                 4 & 8
+                 2 & -4\\
+                 -4 & 8
          \end{bmatrix}
 \]
 
-we see that the Hessian is positive semi-definite and so the function is jointly convex.
+we have our Hessian matrix for which the determinant is $(2)(8) - (-4)^2 \geq 0$ so we see that the Hessian is positive semi-definite and so the function is jointly convex.
 
 \subsection*{2.5}
   The conditions for the existence of minimizers is that $f$ is closed and coercive.
   The conditions for the uniqueness of minimizers is that $f$ is strictly convex.
-Thus for the existence and uniqueness of minimizers for a convex function $f$, we require that $f$ is closed, coercive, and strictly convex.
+Thus the minimal sufficient conditions for the existence and uniqueness of minimizers for a convex function $f$, are that $f$ is closed, coercive, and strictly convex.
 
 \subsection*{2.6}
 
@@ -341,11 +334,11 @@ where $\epsilon > 0$, $\textbf{A} \in \mathbb{R}^{n\times d}$, $\textbf{b} \in \
 To compute the dual problem, we begin by reformulating the problem as:
 \[\min_{\textbf{x}}  f(\textbf{x}) + g(\textbf{Ax})\]
 
-where $f(x) = \frac{1}{2}\|\textbf{x}\|^2$ and $g(\textbf{Ax}) =  i_{[0, 1]}\left(\frac{1}{\epsilon}\|\textbf{A}\textbf{x} - \textbf{b}\|_{\infty}\right)$.
+where $f(\textbf{x}) = \frac{1}{2}\|\textbf{x}\|^2$ and $g(\textbf{Ax}) =  i_{\frac{1}{\epsilon}\|\textbf{A}\textbf{x} - \textbf{b}\|_{\infty} \leq 1}\left(\textbf{Ax}\right)$, the indicator function of the unit ball for $\frac{1}{\epsilon}\|\textbf{A}\textbf{x} - \textbf{b}\|_{\infty}$.
 
 Thus we have our primal problem:
 
-\[\min_{\textbf{x}}  \frac{1}{2}\|\textbf{x}\|^2 + i_{[0, 1]}\left(\frac{1}{\epsilon}\|\textbf{A}\textbf{x} - \textbf{b}\|_{\infty}\right)\]
+\[\min_{\textbf{x}}  \frac{1}{2}\|\textbf{x}\|^2 + i_{\frac{1}{\epsilon}\|\textbf{A}\textbf{x} - \textbf{b}\|_{\infty} \leq 1}\left(\textbf{Ax}\right)\]
 
 
 We know from the Fenchel-Rockafellar duality theory that the dual problem is formulated as:
@@ -353,8 +346,13 @@ We know from the Fenchel-Rockafellar duality theory that the dual problem is for
 
 where $\textbf{u} \in \mathbb{R}^{n \times 1}$, $\textbf{A}^* \in \mathbb{R}^{d\times n}$ the transpose of $\textbf{A}$, and $g^*$ and $f^*$ are the Fenchel conjugates of $g$ and $f$ respectively.
 
-The Fenchel conjugates are:
-\[g^*(\textbf{Ax}) = i^*_{[0, 1]}\left(\frac{1}{\epsilon}\|\textbf{A}\textbf{x} - \textbf{b}\|_{\infty}\right) = \frac{1}{\epsilon} \| \textbf{A}\textbf{x} - \textbf{b}\|_1\]
+For the Fenchel conjugate of $g(\textbf{Ax})$, we first recognize that the dual of the indicator function is the support function under $\frac{1}{\epsilon}\|\textbf{A}\textbf{x} - \textbf{b}\|_{\infty}$ which is the definition for the dual norm $\frac{1}{\epsilon}\|\textbf{A}\textbf{x} - \textbf{b}\|_{1}$.
+
+Thus:
+
+\[g^*(\textbf{Ax}) = i^*_{\frac{1}{\epsilon}\|\textbf{A}\textbf{x} - \textbf{b}\|_{\infty} \leq 1}\left(\textbf{Ax}\right) = \frac{1}{\epsilon} \| \textbf{A}\textbf{x} - \textbf{b}\|_1\].
+
+The Fenchel conjugate of $f(\textbf{x})$:
 
 \[f^*(\textbf{x}) =  \frac{1}{2}\|\textbf{x}\|^2\]
 
@@ -378,10 +376,10 @@ We know that for $f(x) = \frac{1}{2}\|\textbf{x}\|^2$:
 where $\textbf{0}_d = \textbf{0} \in \mathbb{R}^{d \times 1}$. Thus, knowing that $\textbf{A} \in \mathbb{R}^{n\times d}$ is a linear operator:
 \[\textbf{0}_n \in int \big(\textbf{A} dom(f)\big)\]
 
-Moreover, for $g(\textbf{u}) =  i_{[0, 1]}\left(\frac{1}{\epsilon}\|\textbf{u} - \textbf{b}\|_{\infty}\right)$:
+Moreover, for $g(\textbf{u}) =  i_{\frac{1}{\epsilon}\|\textbf{u} - \textbf{b}\|_{\infty} \leq 1}\left(\textbf{u}\right)$:
 \[\textbf{0}_n \in dom(g)\]
 
-if $\|\textbf{b}\|_{\infty} \leq \epsilon$. Therefore:
+if $\|\textbf{b}\|_{\infty} \leq \epsilon$ and,
 \[\textbf{0}_n \in int \big(dom(g)\big)\]
 
 if $\|\textbf{b}\|_{\infty} < \epsilon$.
@@ -393,7 +391,12 @@ Under the condition that $\|\textbf{b}\|_{\infty} < \epsilon$, strong duality ho
 The KKT conditions:
 \[\textbf{x} \in \partial f^*(-\textbf{A}^*\textbf{u}) \text{ and } \textbf{Ax} \in \partial g^*(\textbf{u})\]
 
-where $\partial f^*$ and $\partial g^*$ are the subgradients of $f^*$ and $g^*$ respectively.
+and equivalently,
+
+\[-\textbf{A}^*\textbf{u} \in \partial f(\textbf{x}) \text{ and } \textbf{u} \in \partial g(\textbf{Ax})\]
+
+
+we will use the formulation involving $\partial f^*$ and $\partial g^*$, the subgradients of $f^*$ and $g^*$ respectively.
 
 We know that:
 \[\partial f^*(-\textbf{A}^*\textbf{u}) = \partial \frac{1}{2}\|-\textbf{A}^*\textbf{u}\|^2 = -\textbf{A}^*\textbf{u}\]
@@ -402,14 +405,14 @@ Moreover:
 \[\partial g^*(\textbf{u}) = \partial\frac{1}{\epsilon} \| \textbf{u} - \textbf{b}\|_1 \]
 
 and so
-\[\left(\partial\| \textbf{u} - \textbf{b}\|_1\right)_i = \begin{cases}
+\[\left(\partial \frac{1}{\epsilon}\| \textbf{u} - \textbf{b}\|_1\right)_i = \begin{cases}
       \frac{1}{\epsilon}, &  \text{if } | u_i - b_i| > 0 \\
       -\frac{1}{\epsilon}, &  \text{if } | u_i - b_i| < 0 \\
       [-\frac{1}{\epsilon}, \frac{1}{\epsilon}], &  \text{if } | u_i - b| = 0 \\
    \end{cases} \\
 \]
 
-where $\left(\partial\| \textbf{u} - \textbf{b}\|_1\right)_i$ is the $i^{th}$ element of $\partial\| \textbf{u} - \textbf{b}\|_1 \in \mathbb{R}^{n \times 1}$
+where $\left(\partial\| \textbf{u} - \textbf{b}\|_1\right)_i$ is the $i^{th}$ element of $\partial\| \textbf{u} - \textbf{b}\|_1 \in \mathbb{R}^{n \times 1}$, for $i=1, ..., n$.
 
 Thus, our KKT conditions state that:
 \[\textbf{x} = -\textbf{A}^*\textbf{u}\]
@@ -674,6 +677,6 @@ Similarly for each algorithm, we can plot the decision boundaries from the learn
 \end{figure}
 
 \subsection*{4.4}
-Comparing the two algorithms, we can see that both are able to converge to $\alpha$ vectors producing decision boundaries that are relatively successful at separating the majority of the training points for the two classes. However, the FISTA decision boundary misses a couple points for both classes with a decision boundary that is rather close to boundary points of each class. Thus, the quality of the solution is not as nice as the RCPGA where there is ample buffer surrounding the decision boundary for both classes. This would seem that RCPGA can produce better results, however considering the loss function plots for both algorithms, we can see that this comes at a tradeoff of computational resources/speed. FISTA is able to converge in around 50 iterations whereas RCPGA required on the order of $3\times 10^{5}$ iterations. Although each FISTA step involves two steps (to calculate $\alpha_{k+1}$ and $\nu_{k+1}$), this is still a much faster algorithm than RCGPA. Thus, depending on the practical use case, if there is a requirement for algorithm speed, then FISTA may be more appropriate. On the other hand, if we have more resources available, then RCGPA may be more appropriate as it seems to produce more reasonable/accurate results.
+Comparing the two algorithms, we can see that both are able to converge to $\alpha$ vectors producing decision boundaries that are relatively successful at separating the majority of the training points for the two classes. However, the FISTA decision boundary misses a couple points for both classes with a decision boundary that is rather close to boundary points of each class. Thus, the quality of the solution is not as nice as the RCPGA where there are ample buffer zones surrounding the decision boundary for both classes. This would seem that RCPGA can produce better results, however considering the loss function plots for both algorithms, we can see that this comes at a tradeoff of computational resources/speed. FISTA is able to converge in around 50 iterations whereas RCPGA required on the order of $3\times 10^{5}$ iterations. Although each FISTA step involves two steps (to calculate $\alpha_{k+1}$ and $\nu_{k+1}$), this is still a much faster algorithm than RCGPA. Thus, depending on the practical use case, if there is a requirement for algorithm speed, then FISTA may be more appropriate. On the other hand, if we have more resources available, then RCGPA may be more appropriate as it seems to produce more reasonable/accurate results.
 
 \end{document}

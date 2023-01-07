@@ -8,7 +8,7 @@ from constants import DEFAULT_SEED, OUTPUTS_FOLDER
 from helpers import plot_loss
 from src.gradient_algorithms import (
     FastIterativeShrinkageThresholdAlgorithm,
-    RandomizedCoordinateProjectedGradientAlgorithm,
+    RandomizedCoordinateProximalGradientAlgorithm,
 )
 from src.problems import HalfMoonsProblem
 
@@ -23,12 +23,12 @@ def plot_contour(
     x_ticks = np.linspace(
         x_min,
         x_max,
-        500,
+        1000,
     )
     y_ticks = np.linspace(
         y_min,
         y_max,
-        500,
+        1000,
     )
 
     x1_grid, x2_grid = np.meshgrid(x_ticks, y_ticks)
@@ -88,7 +88,7 @@ def part_4():
 
     # Randomized Coordinate Projected Gradient Algorithm
     number_of_steps = int(3e5)
-    rcpga = RandomizedCoordinateProjectedGradientAlgorithm(half_moons_problem)
+    rcpga = RandomizedCoordinateProximalGradientAlgorithm(half_moons_problem)
     x_rcpga, loss_rcpga = rcpga.run(x0.copy(), lambda_parameter, number_of_steps)
     plot_contour(
         half_moons_problem=half_moons_problem,

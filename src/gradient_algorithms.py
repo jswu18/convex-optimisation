@@ -107,7 +107,7 @@ class RandomizedCoordinateProximalGradientAlgorithm(GradientAlgorithm):
         :param j: dimension index
         :return: gamma_j for the rcpga algorithm
         """
-        return self.problem.n / (np.linalg.norm(self.problem.a_matrix_j(j)) ** 2)
+        return self.problem.mu / (np.linalg.norm(self.problem.a_matrix_j(j)) ** 2)
 
     def run(
         self, x, lambda_parameter, number_of_steps
@@ -134,22 +134,6 @@ class RandomizedCoordinateProximalGradientAlgorithm(GradientAlgorithm):
             )
             loss.append(self.problem.loss(x, lambda_parameter))
         return x, loss
-
-
-class RandomizedCoordinateProjectedGradientAlgorithm(
-    RandomizedCoordinateProximalGradientAlgorithm
-):
-    def __init__(self, problem: HalfMoonsProblem):
-        super().__init__(problem)
-
-    def calculate_gamma_parameter(self, j: int) -> float:
-        """
-        gamma = 1/(||a_j||^2)
-
-        :param j: dimension index
-        :return: gamma_j for the rcpga algorithm
-        """
-        return 1 / (np.linalg.norm(self.problem.a_matrix_j(j)) ** 2)
 
 
 class FastIterativeShrinkageThresholdAlgorithm(GradientAlgorithm):

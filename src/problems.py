@@ -104,6 +104,14 @@ class Problem(ABC):
         """
         pass
 
+    @property
+    @abstractmethod
+    def mu(self) -> float:
+        """
+        :return: strong convexity coefficient
+        """
+        pass
+
 
 class SparseProblem(Problem):
     def __init__(
@@ -129,6 +137,10 @@ class SparseProblem(Problem):
         self.sparsity = sparsity
         self.std = std
         super().__init__(a_matrix, y)
+
+    @property
+    def mu(self) -> float:
+        return self.n
 
     @staticmethod
     def proximity_operator(
@@ -227,6 +239,10 @@ class HalfMoonsProblem(Problem):
             a_matrix=np.multiply(y @ y.T, self.gram_matrix),
             y=y,
         )
+
+    @property
+    def mu(self) -> float:
+        return 1
 
     @staticmethod
     def kernel(x: np.ndarray, y: np.ndarray, sigma: float) -> float:
