@@ -164,9 +164,12 @@ class SparseProblem(Problem):
         :param lambda_parameter: scalar on g(x) of the minimization problem
         :return: LASSO loss evaluation at x with lambda
         """
-        return 0.5 * np.mean(
-            (self.a_matrix @ x - self.y) ** 2
-        ) + lambda_parameter * np.linalg.norm(x, ord=1)
+        return (
+            (1 / (2 * self.n))
+            * (self.a_matrix @ x - self.y).T
+            @ (self.a_matrix @ x - self.y)
+            + lambda_parameter * np.linalg.norm(x, ord=1)
+        ).item()
 
     def grad_f_j(self, x: np.ndarray, j: int) -> float:
         """

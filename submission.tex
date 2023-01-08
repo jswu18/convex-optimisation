@@ -49,7 +49,7 @@
 \graphicspath{ }
 \usetikzlibrary{arrows}
 
-\title{\textbf{COMP0083 Convex Optimisation Assignment}}
+\title{\textbf{COMP0083 Convex Optimisation Coursework}}
 %\author{Jian Shu (James) Wu \\ }
 \date{Jan 9, 2023}
 
@@ -57,11 +57,8 @@
 \maketitle
 \section*{Part 1: Questions with multiple answers}
 \subsection*{1.1}
-
-The function for (a):
+The function for (a) is a convex function:
 \[\max\{ax+b, x^4-5, e^{x^2}\}\]
-
-is a convex function.
 
 \subsection*{1.2}
 
@@ -83,20 +80,21 @@ corresponding to Figure (a).
 \subsection*{1.3}
 For a function $f(x) = \langle Ax, x \rangle + \langle x, b\rangle + c$ where A is a square matrix not necessarily symmetric, the gradient is (a):
 \[\nabla f(x) = A^*x + Ax + b\]
+
+where $A^*$ denotes the transpose of $A$.
 \subsection*{1.4}
 The Fenchel conjugate of $f(x) = g(2x)$ is (a):
 \[f^*(u) = g^*(u/2)\]
 
 \subsection*{1.5}
-The solution to the dual problem is (c):
+The solution to the dual problem of the ridge regression problem is (c):
 \[\bar{u} = (\textbf{K}+\lambda n \textbf{Id})^{-1} y\]
 
 \newpage
 \section*{Part 2: Theory on convex analysis and optimization}
 \subsection*{2.1}
 
-The Fenchel conjugate is defined as:
-
+The Fenchel conjugate of $f(x)$ is defined as:
 \[f^*(u) = \sup_{x\in \mathcal{X}} \{ \langle x, u\rangle - f(x) \}\]
 
 \subsection*{2.1.1}
@@ -108,19 +106,16 @@ Given :
    \end{cases}\]
 
 Substituting into the Fenchel conjugate definition:
-
-\[f^*(u) = \sup_{x\in \mathcal{X}} \{ \langle x, u\rangle +  \log x \}\]
+\[f^*(u) = \sup_{x > 0} \{ \langle x, u\rangle +  \log x \}\]
 
 To find the supremum, we can take the partial derivative with respect to $x$, set to zero, and solve for $x$:
-
-\[\frac{\partial}{\partial x}(ux + logx) = u + \frac{1}{x} = 0\]
+\[\frac{\partial}{\partial x}(ux + \log x) = u + \frac{1}{x} = 0\]
 
 Thus, the supremum above is acheived when $x=\frac{-1}{u}$:
-
 \[f^*(u) = u \left(\frac{-1}{u} \right) +  \log\left(\frac{-1}{u} \right) \]
 
+where $x>0$ so $u < 0$.
 Simplifying, we have the Fenchel conjugate:
-
 \[ f(x) = \begin{cases}
       - (1 + \log (-u), & \text{if } u < 0 \\
       +\infty, & \text{if } u \geq 0 \\
@@ -128,148 +123,112 @@ Simplifying, we have the Fenchel conjugate:
 
 
 \subsection*{2.1.2} Given:
-
 \[f(x) = x^2\]
 
 Substituting into the Fenchel conjugate definition:
-
 \[f^*(u) = \sup_{x\in \mathcal{X}} \{ \langle x, u\rangle - x^2 \}\]
 
 We can compute the partial derivative with respect to $x$, set to zero, and solve for $x$:
-
 \[\frac{\partial}{\partial x}(ux - x^2) = u - 2x = 0\]
 
 Thus, the supremum is achieved when $x=\frac{u}{2}$:
-
 \[f^*(u) = u \left(\frac{u}{2} \right) -  \left(\frac{u}{2} \right)^2 \]
 
 Simplifying, we have the Fenchel conjugate:
-
 \[f^*(u) =  \frac{u^2}{4}\]
 
 \subsection*{2.1.3}Given:
-
 \[f(x) = i_{\left[0, 1\right]}\]
 
 Substituting into the Fenchel conjugate definition:
-
 \[f^*(u) = \sup_{x\in \mathcal{X}} \{ \langle x, u\rangle - i_{\left[0, 1\right]} \}\]
 
 Thus,
-
 \[f^*(u) = \sup_{x\in \left[0, 1\right]} \{ \langle x, u\rangle \}\]
 
 We can see that the Fenchel conjugate is:
 
 \[ f^*(u) = \max(0, u)}\]
 
-is the ReLu function.
+the ReLu function.
 
 \subsection*{2.2.1}
 
 Given $f$ a proper convex function, to prove by induction Jensen's inequality:
-
 \[f\left(\sum_{i=1}^n \lambda_i x_i\right) \leq \sum_{i=1}^{n} \lambda_i f(x_i)\]
 
 for all $x_1, ... x_n \in \mathcal{X}$ and for all $\lambda_1, ..., \lambda_n \in \mathbb{R}_+$ with $\sum_{i=1}^n \lambda_i = 1$, we start with the definition of convexity which states:
-
 \[f(\lambda_1 x_1 + \lambda_2 x_2) \leq \lambda_1 f(x_1) + \lambda_2 f(x_2)\]
 
-for all $x_1, x_2 \in \mathcal{X}$ and $\lambda_1, \lambda_2 \in \mathbb{R}_+$ with $\lambda_1 + \lambda_2 = 1$. In this base case $n=2$. Our inductive step will prove that the inequality continues to hold for $n+1$. We begin with:
-
+for all $x_1, x_2 \in \mathcal{X}$ and $\lambda_1, \lambda_2 \in \mathbb{R}_+$ with $\lambda_1 + \lambda_2 = 1$. This acts as a base case for Jensen's inequality when $n=2$. Our inductive step will prove that the inequality continues to hold for $n+1$. We begin with:
 \[f\left(\sum_{i=1}^{n+1} \lambda_i x_i\right) = f\left(\sum_{i=1}^n \lambda_i x_i + \lambda_{n+1} x_{n+1}\right)\]
 
 where $\sum_{i=1}^{n+1} \lambda_i = 1$. We can insert the term $(1-\lambda_{n+1})$:
-
 \[f\left(\sum_{i=1}^{n+1} \lambda_i x_i\right) = f\left((1-\lambda_{n+1}) \sum_{i=1}^n \frac{\lambda_i}{1-\lambda_{n+1}} x_i + \lambda_{n+1} x_{n+1}\right)\]
 
 
-If we define $\bar{x} = \sum_{i=1}^n \frac{\lambda_i}{1-\lambda_{n+1}} x_i$ and we are back to our $n=2$ base case, so we know from convexity:
-
+If we define $\bar{x} = \sum_{i=1}^n \frac{\lambda_i}{1-\lambda_{n+1}} x_i$, we are back to our $n=2$ base case, so we know that:
 \[ f\left((1-\lambda_{n+1})\bar{x} + \lambda_{n+1} x_{n+1}\right) \leq (1-\lambda_{n+1}) f\left( \bar{x}\right) + \lambda_{n+1} f\left( x_{n+1}\right)\]
 
-Substituting the definition for $\bar{x}$:
-
+Substituting back the definition for $\bar{x}$:
 \[f\left(\sum_{i=1}^{n+1} \lambda_i x_i\right) \leq (1-\lambda_{n+1}) f\left( \sum_{i=1}^n \frac{\lambda_i}{1-\lambda_{n+1}} x_i\right) + \lambda_{n+1} f\left( x_{n+1}\right)\]
 
-We know that from the known inequality from the $n$ case:
-
+We know that from the inequality in the $n$ case:
 \[f\left( \sum_{i=1}^n \frac{\lambda_i}{1-\lambda_{n+1}} x_i\right) = \frac{1}{{1-\lambda_{n+1}}}f\left( \sum_{i=1}^n \lambda_i x_i\right) \leq \frac{1}{{1-\lambda_{n+1}}} \sum_{i=1}^n \lambda_i f \left(x_i\right) =  \sum_{i=1}^n \frac{\lambda_i}{{1-\lambda_{n+1}}}  f \left(x_i\right)\]
 
 Thus we can upper bound our previous inequality:
-
-
 \[f\left(\sum_{i=1}^{n+1} \lambda_i x_i\right)  \leq (1-\lambda_{n+1})\sum_{i=1}^n \frac{\lambda_i}{{1-\lambda_{n+1}}}  f \left(x_i\right) + \lambda_{n+1} f\left( x_{n+1}\right) =\sum_{i=1}^{n+1} \lambda_i f \left(x_i\right) \]
 
 proving our inductive step for $n+1$ and Jensen's inequality as required. \square
 
 
 \subsection*{2.2.2}
-The characterisation of convexity states:
-
+The characterisation for differential functions for convexity states:
 \[\text{A function } f \text{ is convex} \leftrightarrow \langle \nabla f(x) - \nabla f(y), x-y \rangle \geq 0\]
 
 $\forall x, y \in dom f$.
 
 For $f(x) = -\log(x)$, $\nabla f(x) = \frac{-1}{x}$:
-
 \[\langle \nabla f(x) - \nabla f(y), x-y \rangle = \langle \frac{1}{y}-\frac{1}{x}, x-y \rangle\]
 
-If $x>y$ we have the following:
+If $x>y$:
+\[x-y>0 \text{ and }\frac{1}{y} - \frac{1}{x} > 0\]
 
-\begin{gather*}
-    x-y>0\\
-    \frac{1}{y} - \frac{1}{x} > 0\\
-\end{gather*}
+so $\langle \frac{1}{y}-\frac{1}{x}, x-y \rangle > 0$.
 
-and
-\[\langle \frac{1}{y}-\frac{1}{x}, x-y \rangle > 0\]
+If $x<y$:
+\[x-y<0 \text{ and }\frac{1}{y} - \frac{1}{x} < 0\]
 
-If $x<y$ we have the following:
-\begin{gather*}
-    x-y<0\\
-    \frac{1}{y} - \frac{1}{x} < 0\\
-\end{gather*}
+so $\langle \frac{1}{y}-\frac{1}{x}, x-y \rangle > 0$.
 
-and
-\[\langle \frac{1}{y}-\frac{1}{x}, x-y \rangle > 0\]
+If $x=y$:
+\[x-y=0 \text{ and }\frac{1}{y} - \frac{1}{x} = 0\]
 
-If $x=y$ we have the following:
-\begin{gather*}
-    x-y=0\\
-    \frac{1}{y} - \frac{1}{x} = 0\\
-\end{gather*}
-
-and
-\[\langle \frac{1}{y}-\frac{1}{x}, x-y \rangle = 0\]
+so $\langle \frac{1}{y}-\frac{1}{x}, x-y \rangle = 0$.
 
 Thus, $\forall x, y \in dom f, \langle \nabla f(x) - \nabla f(y), x-y \rangle \geq 0$ so by the characterization for differentiable functions, $f(x) = -\log(x)$ is convex. \square
 
 \subsection*{2.2.3}
 
 Given Jensen's inequality in 2.2.1 for a convex function $f(x)$:
-
 \[f\bigg(\sum_{i=1}^n \lambda_i x_i\bigg) \leq \sum_{i=1}^n \lambda_i f(x_i)\]
 
 and having proved in 2.2.2 that $f(x) = -\log(x)$ is convex, we can write:
-
 \[-\log\bigg(\sum_{i=1}^n \lambda_i x_i\bigg) \leq - \sum_{i=1}^n \lambda_i \log(x_i)\]
 
 Rearranging:
-
 \[\sum_{i=1}^n \lambda_i x_i \geq \exp \bigg(\sum_{i=1}^n \log(x_i^{\lambda_i}) \bigg)\]
 
 
 Choosing $\lambda_i = \frac{1}{n}$:
-
 \[\frac{1}{n}\sum_{i=1}^n x_i \geq \exp \bigg(\sum_{i=1}^n \log(x_i^{\frac{1}{n}}) \bigg)\]
 
-The sum of logarithms is the logarithm of the products:
+so $\sum_{i=1}^{n} \lambda_i = 1$ as required by Jensen's inequality.
 
+The sum of logarithms is the logarithm of the products:
 \[\frac{1}{n}\sum_{i=1}^n x_i \geq \exp \bigg(\log((x_1 \cdots x_n )^{\frac{1}{n}})\bigg)\]
 
 Thus we get our inequality:
-
 \[\frac{1}{n}\sum_{i=1}^n x_i \geq \sqrt[n]{x_1 \cdots x_n}\]
 
 for all $x_1, ..., x_n \in \mathbb{R}^+$ \square
@@ -277,19 +236,15 @@ for all $x_1, ..., x_n \in \mathbb{R}^+$ \square
 \subsection*{2.3}
 
 Given a polytope $C=co(a_1, ..., a_m)$ in $X$, we know that any point $x \in C$ can be expressed:
-
 \[x = \sum_{i=1}^{m} \lambda_i a_i \]
 
 where $\sum_{i=1}^{m} \lambda_i = 1$. Knowing that $f$ is a convex function on $C$, we can write Jensen's inequality:
-
 \[f\left(\sum_{i=1}^{m} \lambda_i a_i \right) \leq \sum_{i=1}^{m} \lambda_i f(a_i)\]
 
 Because $\sum_{i=1}^{m} \lambda_i f(a_i)$ is a weighted average of $f(a_i)$'s we know that:
-
 \[\sum_{i=1}^{m} \lambda_i f(a_i) \leq \max_{i} f(a_i)\]
 
 the weighted average will always be less than or equal to the maximum $f(a_i)$ value. Thus, we know that:
-
 \[f\left(\sum_{i=1}^{m} \lambda_i a_i \right) \leq \max_{i} f(a_i)\]
 
 So all function evaluations of $f(x)$ for $x \in C$ are less than or equal to the maximum of the function evaluations at the verticies $a_1, ..., a_m$ and so the maximum of the convex function $f$ on $C$ is attained at one of the vertices $a_1, ..., a_m$.
@@ -298,8 +253,6 @@ So all function evaluations of $f(x)$ for $x \in C$ are less than or equal to th
 \subsection*{2.4}
 
 To prove that the function $f(x, y) = \| x-2y\|^2$ is convex, we will show that the Hessian is a positive semi-definite matrix. The Hessian is defined as:
-
-
 \[
 \nabla^2 f(x, y) = \begin{bmatrix}
                  \frac{\partial f(x, y)}{\partial^2 x} & \frac{\partial f(x, y)}{\partial y \partial x}\\
@@ -308,14 +261,13 @@ To prove that the function $f(x, y) = \| x-2y\|^2$ is convex, we will show that 
 \]
 
 Calculating each term:
-
 \[\nabla^2 f(x, y) = \begin{bmatrix}
                  2 & -4\\
                  -4 & 8
          \end{bmatrix}
 \]
 
-we have our Hessian matrix for which the determinant is $(2)(8) - (-4)^2 \geq 0$ so we see that the Hessian is positive semi-definite and so the function is jointly convex.
+we have our Hessian matrix for which the eigenvalues are greater than or equal to zero, so we see that the Hessian is positive semi-definite and so the function is jointly convex.
 
 \subsection*{2.5}
   The conditions for the existence of minimizers is that $f$ is closed and coercive.
@@ -337,7 +289,6 @@ To compute the dual problem, we begin by reformulating the problem as:
 where $f(\textbf{x}) = \frac{1}{2}\|\textbf{x}\|^2$ and $g(\textbf{Ax}) =  i_{\frac{1}{\epsilon}\|\textbf{A}\textbf{x} - \textbf{b}\|_{\infty} \leq 1}\left(\textbf{Ax}\right)$, the indicator function of the unit ball for $\frac{1}{\epsilon}\|\textbf{A}\textbf{x} - \textbf{b}\|_{\infty}$.
 
 Thus we have our primal problem:
-
 \[\min_{\textbf{x}}  \frac{1}{2}\|\textbf{x}\|^2 + i_{\frac{1}{\epsilon}\|\textbf{A}\textbf{x} - \textbf{b}\|_{\infty} \leq 1}\left(\textbf{Ax}\right)\]
 
 
@@ -349,11 +300,9 @@ where $\textbf{u} \in \mathbb{R}^{n \times 1}$, $\textbf{A}^* \in \mathbb{R}^{d\
 For the Fenchel conjugate of $g(\textbf{Ax})$, we first recognize that the dual of the indicator function is the support function under $\frac{1}{\epsilon}\|\textbf{A}\textbf{x} - \textbf{b}\|_{\infty}$ which is the definition for the dual norm $\frac{1}{\epsilon}\|\textbf{A}\textbf{x} - \textbf{b}\|_{1}$.
 
 Thus:
-
 \[g^*(\textbf{Ax}) = i^*_{\frac{1}{\epsilon}\|\textbf{A}\textbf{x} - \textbf{b}\|_{\infty} \leq 1}\left(\textbf{Ax}\right) = \frac{1}{\epsilon} \| \textbf{A}\textbf{x} - \textbf{b}\|_1\].
 
 The Fenchel conjugate of $f(\textbf{x})$:
-
 \[f^*(\textbf{x}) =  \frac{1}{2}\|\textbf{x}\|^2\]
 
 We can substitute:
@@ -376,7 +325,7 @@ We know that for $f(x) = \frac{1}{2}\|\textbf{x}\|^2$:
 where $\textbf{0}_d = \textbf{0} \in \mathbb{R}^{d \times 1}$. Thus, knowing that $\textbf{A} \in \mathbb{R}^{n\times d}$ is a linear operator:
 \[\textbf{0}_n \in int \big(\textbf{A} dom(f)\big)\]
 
-Moreover, for $g(\textbf{u}) =  i_{\frac{1}{\epsilon}\|\textbf{u} - \textbf{b}\|_{\infty} \leq 1}\left(\textbf{u}\right)$:
+Moreover, for $g(\textbf{Ax}) =  i_{\frac{1}{\epsilon}\|\textbf{Ax} - \textbf{b}\|_{\infty} \leq 1}\left(\textbf{Ax}\right)$:
 \[\textbf{0}_n \in dom(g)\]
 
 if $\|\textbf{b}\|_{\infty} \leq \epsilon$ and,
@@ -392,11 +341,9 @@ The KKT conditions:
 \[\textbf{x} \in \partial f^*(-\textbf{A}^*\textbf{u}) \text{ and } \textbf{Ax} \in \partial g^*(\textbf{u})\]
 
 and equivalently,
-
 \[-\textbf{A}^*\textbf{u} \in \partial f(\textbf{x}) \text{ and } \textbf{u} \in \partial g(\textbf{Ax})\]
 
-
-we will use the formulation involving $\partial f^*$ and $\partial g^*$, the subgradients of $f^*$ and $g^*$ respectively.
+though we will use the formulation involving $\partial f^*$ and $\partial g^*$, the subgradients of $f^*$ and $g^*$ respectively.
 
 We know that:
 \[\partial f^*(-\textbf{A}^*\textbf{u}) = \partial \frac{1}{2}\|-\textbf{A}^*\textbf{u}\|^2 = -\textbf{A}^*\textbf{u}\]
@@ -424,26 +371,26 @@ and
       [-\frac{1}{\epsilon}, \frac{1}{\epsilon}], &  \text{if } | u_i - b| = 0 \\
    \end{cases} \\\]
 
-where $(\textbf{Ax})_i$ is the $i^{th}$ element of $\textbf{Ax}\in \mathbb{R}^{n \times 1}$
+where $(\textbf{Ax})_i$ is the $i^{th}$ element of $\textbf{Ax}\in \mathbb{R}^{n \times 1}$ for $i=1, ..., n$.
 
 \subsubsection*{2.6.4}
 
 To derive a rate of convergence on the primal iterates from the applications of FISTA (Fast Iterative Shrinkage Threshold Algorithm) on the  dual problem when strong duality holds, the distance to the primal solution is bounded by the dual objective values:
 \[\frac{2}{\mu} \|\textbf{x}_k - \bar{\textbf{x}}\|^2 \leq \Psi(\textbf{u}_k) - \Psi(\bar{\textbf{u}})\]
 
-where $\bar{\textbf{x}} \in \mathbb{R}^{d \times 1}$ and $\bar{\textbf{u}} \in \mathbb{R}^{n \times 1}$ are minimizers for the primal and dual solution respectively, $\textbf{x}_k \in \mathbb{R}^{d \times 1}$ and $\textbf{u}_k \in \mathbb{R}^{n \times 1}$ are respectively the primal and dual solutions for the $k^{th}$ step of FISTA, and $\mu$ is the coefficient of strong convexity for $f$. For our problem, $\mu = 1$.
+where $\bar{\textbf{x}} \in \mathbb{R}^{d \times 1}$ and $\bar{\textbf{u}} \in \mathbb{R}^{n \times 1}$ are minimizers for the primal and dual solution respectively, $\textbf{x}_k \in \mathbb{R}^{d \times 1}$ and $\textbf{u}_k \in \mathbb{R}^{n \times 1}$ are respectively the primal and dual solutions for the $k^{th}$ step of FISTA, and $\mu$ is the coefficient of strong convexity for $f$.
 Moreover, $\Psi(\textbf{u})=\frac{1}{2}\textbf{u}^*\textbf{A}\textbf{A}^*\textbf{u} + \frac{1}{\epsilon} \| \textbf{u} - \textbf{b}\|_1$, our dual objective.
 
-We also know for FISTA that (proof in lecture):
+We also know for FISTA that:
 \[\Psi(\textbf{u}_k) - \Psi(\bar{\textbf{u}}) \leq \frac{\|\textbf{u}_0 - \bar{\textbf{u}}\|^2}{2 \gamma \left(t_{k-1}}\right)^2\]
 
-where $\textbf{u}_0 \in \mathbb{R}^{n \times 1}$ is the initial starting point for FISTA, and $0 < \gamma \leq \frac{1}{L}$  and $t_{k-1}$ are both scalars dictating step sizes in FISTA ($t_{k-1}$ is for step $k-1}$). $L$ is the Lipschitz smoothness of $f$. For our problem, $L=1$.
+where $\textbf{u}_0 \in \mathbb{R}^{n \times 1}$ is the initial starting point for FISTA, and $0 < \gamma \leq \frac{1}{L}$  and $t_{k-1}$ are both scalars dictating step sizes in FISTA ($t_{k-1}$ is for step $k-1}$).
 
 Thus:
-\[ \|\textbf{x}_k - \bar{\textbf{x}}\|^2 \leq \frac{\|\textbf{u}_0 - \bar{\textbf{u}}\|^2}{4 \gamma \left(t_{k-1}}\right)^2\]
+\[ \|\textbf{x}_k - \bar{\textbf{x}}\|^2 \leq \frac{\mu \|\textbf{u}_0 - \bar{\textbf{u}}\|^2}{4 \gamma \left(t_{k-1}}\right)^2\]
 
 Simplifying:
-\[ \|\textbf{x}_k - \bar{\textbf{x}}\| \leq \frac{\|\textbf{u}_0 - \bar{\textbf{u}}\|}{2  \sqrt{\gamma}t_{k-1}}\]
+\[ \|\textbf{x}_k - \bar{\textbf{x}}\| \leq \sqrt{\frac{\mu}{4\gamma}}\frac{\|\textbf{u}_0 - \bar{\textbf{u}}\|}{t_{k-1}}\]
 
 
 Two choices for $t_k$ in FISTA are:
@@ -453,10 +400,9 @@ Two choices for $t_k$ in FISTA are:
 \item $t_k = \frac{k+a}{a}$ with $a \geq 2$ where $\frac{1}{t_{k-1}} \leq \frac{a}{k+1}$
 \end{itemize}
 
-where $t_0  =1 $
-
 In both cases the rate of convergence of the primal iterates when applying FISTA on the dual problem:
-\[ \|\textbf{x}_k - \bar{\textbf{x}}\| \leq \frac{a\|\textbf{u}_0 - \bar{\textbf{u}}\|}{\sqrt{\gamma}(k+1)}\]
+\[ \|\textbf{x}_k - \bar{\textbf{x}}\| \leq \sqrt{\frac{a^2 \mu}{4\gamma}}\frac{\|\textbf{u}_0 - \bar{\textbf{u}}\|}{k+1}\]
+
 
 where $a = 2$ if $t_k = \frac{1+\sqrt{1+ 4 (t_{k-1})^2}}{2}$. In other words, the rate is $\mathcal{O}(\frac{1}{k})$.
 
@@ -475,11 +421,9 @@ where $\textbf{a}^i \in \mathbb{R}^{1 \times d}$ is the $i^{th}$ row of \textbf{
 
 \subsection*{3.1}
 The Proximal Stochastic Gradient Algorithm:
-
 \[\textbf{x}^{k+1} = prox_{\gamma_k \lambda \|\cdot\|_1} \left(\textbf{x}^k - \gamma_k \left(\left\langle \textbf{a}^{i_k}, \textbf{x}^{k}\right\rangle - y_{i_k}\right)\textbf{a}^{i_k}\right)\]
 
 where:
-
 \[\gamma_k = \frac{n}{\|A\|^2 \sqrt{k+1}}\]
 
 and
@@ -526,13 +470,13 @@ Plotting the objective function values vs the number of iterations for both the 
 \centering
 \begin{minipage}{.5\textwidth}
   \centering
-\includegraphics[scale=0.3]{outputs/part_3/psga-loss}
+\includegraphics[scale=0.4]{outputs/part_3/psga-loss}
 \caption{PSGA Loss}
 \label{fig:}
 \end{minipage}%
 \begin{minipage}{.5\textwidth}
   \centering
-\includegraphics[scale=0.3]{outputs/part_3/rcpga-loss}
+\includegraphics[scale=0.4]{outputs/part_3/rcpga-loss}
 \caption{RCPGA Loss}
 \label{fig:}
 \end{minipage}
@@ -605,42 +549,33 @@ Combining, we have our dual problem:
 \subsection*{4.1}
 
 The Fast Iterative Shrinkage Threshold Algorithm (FISTA):
-
 \[\alpha_{k+1} = prox_{\gamma g^*(\cdot)}\bigg(\nu_k + \gamma \textbf{A}_y \nabla f^*(-\textbf{A}_y^* \alpha_{k})\bigg)\]
-
 \[\nu_{k+1} = \alpha_{k} + \frac{t_k - 1}{t_{k+1}}(\alpha_{k+1}-\alpha_{k})\]
 
-where $t_k = \frac{1+\sqrt{1+ 4 (t_{k-1})^2}}{2}$ or $t_k = \frac{k+a}{a}$ with $a \geq 2$. For our implementation we chose the first definition for $t_k$.
+where we choose $t_k = \frac{1+\sqrt{1+ 4 (t_{k-1})^2}}{2}$ for our implementation.
 
 For our dual problem:
-
-\[\nabla f^*(-\textbf{A}_y^* \alpha_{k})) = -\textbf{A}_y^* \alpha_{k}\]
+\[\nabla f^*(-\textbf{A}_y^* \alpha_{k}) = -\textbf{A}_y^* \alpha_{k}\]
 
 and
-
 \[prox_{\gamma g^*(\cdot)}(\omega) = \begin{cases}
       0, &  \text{if } \omega < 0\\
       \omega, &  \text{if } 0 \leq \omega \leq \frac{1}{\gamma n} \\
       \frac{1}{\gamma n}, & \text{if } \frac{1}{\gamma n} < \omega \\
    \end{cases}\]
 
-With FISTA implemented, we can plot the dual objective function:
-
+Implementing FISTA, we can plot the dual objective function:
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.3]{outputs/part_4/fista-loss}
+\includegraphics[scale=0.35]{outputs/part_4/fista-loss}
 \caption{FISTA Loss}
 \label{fig:}
 \end{figure}
-
-
 \subsection*{4.2}
-
 We can also implement the Randomised Coordinate Projected Gradient Algorithm on the dual problem and plot the dual objective function:
-
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.3]{outputs/part_4/rcpga-loss}
+\includegraphics[scale=0.35]{outputs/part_4/rcpga-loss}
 \caption{RCPGA Loss}
 \label{fig:}
 \end{figure}
@@ -649,34 +584,31 @@ We can also implement the Randomised Coordinate Projected Gradient Algorithm on 
 \subsection*{4.3}
 
 We can plot the decision boundary for the randomly initialised $\alpha$ vector as well as the two classes:
-
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.3]{outputs/part_4/initial-contour}
+\includegraphics[scale=0.28]{outputs/part_4/initial-contour}
 \caption{Initial Contour Plot}
 \label{fig:}
 \end{figure}
 
 Similarly for each algorithm, we can plot the decision boundaries from the learned $\alpha$:
-
-
 \begin{figure}[h]
 \centering
 \begin{minipage}{.5\textwidth}
   \centering
-\includegraphics[scale=0.3]{outputs/part_4/rcpga-contour}
+\includegraphics[scale=0.28]{outputs/part_4/rcpga-contour}
 \caption{RCPGA Contour Plot}
 \label{fig:}
 \end{minipage}%
 \begin{minipage}{.5\textwidth}
   \centering
-\includegraphics[scale=0.3]{outputs/part_4/fista-contour}
+\includegraphics[scale=0.28]{outputs/part_4/fista-contour}
 \caption{FISTA Contour Plot}
 \label{fig:}
 \end{minipage}
 \end{figure}
 
 \subsection*{4.4}
-Comparing the two algorithms, we can see that both are able to converge to $\alpha$ vectors producing decision boundaries that are successful at separating the training points for the two classes. It is difficult to determine which of the two decision boundaries are more suitable for the training data, without more context about the data itself. However considering the loss function plots for both algorithms, we can see that FISTA is able to converge in around 20 iterations whereas RCPGA required on the order of $3\times 10^{5}$ iterations. Although each FISTA step involves two steps (to calculate $\alpha_{k+1}$ and $\nu_{k+1}$), this is still a much faster algorithm than RCGPA. However, we can also see that the objective function for FISTA is much less smooth compared to RCGPA. Depending on use case, this may or may not be a problem. Overall, FISTA is able to produce quality decision boundaries much faster than RCGPA.
+Comparing the two algorithms, we can see that both are able to converge to $\alpha$ vectors producing decision boundaries that are successful at separating the training points for the two classes. It is difficult to determine which of the two decision boundaries are more suitable for the training data, without more context about the data itself. However considering the loss function plots for both algorithms, we can see that FISTA is able to converge in around 20 iterations whereas RCPGA required on the order of $3\times 10^{5}$ iterations. Although each FISTA step involves two steps (to calculate $\alpha_{k+1}$ and $\nu_{k+1}$), this is still a much faster algorithm than RCGPA. However, we can also see that the objective function for FISTA with respect to the algorithm iteration is much less smooth compared to RCGPA's loss curve. Depending on use case, this may or may not be a problem. Overall, FISTA is able to produce quality decision boundaries much faster than RCGPA. Moreover, during the parameter turning process of $\lambda$ and $\sigma$, RCPGA was much more robust, converging to good decision boundaries most of the time when compared to FISTA, which required more tuning of parameters to converge to a decision boundary that perfectly separated the two classes of the training data.
 
 \end{document}
