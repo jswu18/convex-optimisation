@@ -131,7 +131,7 @@ def part_4(
 
 if __name__ == "__main__":
     np.random.seed(DEFAULT_SEED)
-    CONTOUR_RESOLUTION = 250
+    CONTOUR_RESOLUTION = 1000
     part_4(
         contour_resolution=CONTOUR_RESOLUTION,
     )
