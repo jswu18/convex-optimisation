@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "comp0083-convex-assignment"
 version = "0.0.0"
-description = "Convex Optimisation Assignment for Advanced Topics in Machine Learning (COMP0083) at UCL 2022"
+description = "Convex Optimisation coursework for Advanced Topics in Machine Learning (COMP0083) at UCL 2022"
 authors = ["James Wu <jian.wu.22@ucl.ac.uk>"]
 
 [tool.poetry.dependencies]
