@@ -117,7 +117,7 @@ Thus, the supremum above is acheived when $x=\frac{-1}{u}$:
 where $x>0$ so $u < 0$.
 Simplifying, we have the Fenchel conjugate:
 \[ f(x) = \begin{cases}
-      - (1 + \log (-u), & \text{if } u < 0 \\
+      - (1 + \log (-u)), & \text{if } u < 0 \\
       +\infty, & \text{if } u \geq 0 \\
    \end{cases}\]
 
@@ -355,7 +355,7 @@ and so
 \[\left(\partial \frac{1}{\epsilon}\| \textbf{u} - \textbf{b}\|_1\right)_i = \begin{cases}
       \frac{1}{\epsilon}, &  \text{if } | u_i - b_i| > 0 \\
       -\frac{1}{\epsilon}, &  \text{if } | u_i - b_i| < 0 \\
-      [-\frac{1}{\epsilon}, \frac{1}{\epsilon}], &  \text{if } | u_i - b| = 0 \\
+      [-\frac{1}{\epsilon}, \frac{1}{\epsilon}], &  \text{if } | u_i - b_i| = 0 \\
    \end{cases} \\
 \]
 
@@ -368,7 +368,7 @@ and
 \[(\textbf{Ax})_i \in \begin{cases}
       \frac{1}{\epsilon}, &  \text{if } | u_i - b_i| > 0 \\
       -\frac{1}{\epsilon}, &  \text{if } | u_i - b_i| < 0 \\
-      [-\frac{1}{\epsilon}, \frac{1}{\epsilon}], &  \text{if } | u_i - b| = 0 \\
+      [-\frac{1}{\epsilon}, \frac{1}{\epsilon}], &  \text{if } | u_i - b_i| = 0 \\
    \end{cases} \\\]
 
 where $(\textbf{Ax})_i$ is the $i^{th}$ element of $\textbf{Ax}\in \mathbb{R}^{n \times 1}$ for $i=1, ..., n$.
@@ -609,6 +609,6 @@ Similarly for each algorithm, we can plot the decision boundaries from the learn
 \end{figure}
 
 \subsection*{4.4}
-Comparing the two algorithms, we can see that both are able to converge to $\alpha$ vectors producing decision boundaries that are successful at separating the training points for the two classes. It is difficult to determine which of the two decision boundaries are more suitable for the training data, without more context about the data itself. However considering the loss function plots for both algorithms, we can see that FISTA is able to converge in around 20 iterations whereas RCPGA required on the order of $3\times 10^{5}$ iterations. Although each FISTA step involves two steps (to calculate $\alpha_{k+1}$ and $\nu_{k+1}$), this is still a much faster algorithm than RCGPA. However, we can also see that the objective function for FISTA with respect to the algorithm iteration is much less smooth compared to RCGPA's loss curve. Depending on use case, this may or may not be a problem. Overall, FISTA is able to produce quality decision boundaries much faster than RCGPA. Moreover, during the parameter tuning process of $\lambda$ and $\sigma$, RCPGA was much more robust, converging to good decision boundaries most of the time when compared to FISTA, which required more tuning of parameters to converge to a decision boundary that perfectly separated the two classes of the training data.
+Comparing the two algorithms, we can see that both are able to converge to $\alpha$ vectors producing decision boundaries that are successful at separating the training points for the two classes. It is difficult to determine which of the two decision boundaries are more suitable for the training data, without more context about the data itself. However considering the loss function plots for both algorithms, we can see that FISTA was able to converge in around 20 iterations whereas RCPGA required on the order of $3\times 10^{5}$ iterations. Although each FISTA step involves two steps (to calculate $\alpha_{k+1}$ and $\nu_{k+1}$), this is still a much faster algorithm than RCGPA. However, we can also see that the objective function for FISTA with respect to the algorithm iteration is much less smooth compared to RCGPA's loss curve. Depending on use case, this may or may not be less desirable. Overall, FISTA is able to produce quality decision boundaries much faster than RCGPA. However, during the parameter tuning process of $\lambda$ and $\sigma$, RCPGA was much more robust, converging to good decision boundaries most of the time when compared to FISTA, which required more tuning of parameters to converge to a decision boundary that perfectly separated the two classes of the training data.
 
 \end{document}
